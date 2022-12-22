@@ -26,7 +26,7 @@ const Home = () => {
   return (
     <div className='Home'>
       <div className="homeWrapper">
-        {loading ? <div className="loader"><TailSpin></TailSpin></div> : <Fragment><div className="filterOption">
+        {loading ? <div className="loader"><Bars height={200} width={''}></Bars></div> : <Fragment><div className="filterOption">
           <Filter></Filter>
         </div>
           <div className="ImageCards">

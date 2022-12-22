@@ -70,7 +70,14 @@ const Imageoverlay = () => {
             <MdFavorite></MdFavorite>
           </div>
           <div className="download">
-            <ItemsMenu event={""} isarrow={true}></ItemsMenu>
+            <button
+              onClick={() => {
+                window.open(image?.links?.download);
+              }}
+              className="btn">
+           
+              Download Image
+            </button>
           </div>
         </div>
       </div>
@@ -139,7 +146,7 @@ const Imageoverlay = () => {
                 {moment(image?.created_at).format("MMMM Do YYYY, h:mm a")}
               </span>{" "}
             </div>
-            {image?.exif?.name!==''? (
+            {image?.exif?.name !== "" ? (
               <div className="listDetails">
                 <MdCamera></MdCamera> <span>{image?.exif?.name}</span>
               </div>

@@ -49,8 +49,9 @@ const Filter = () => {
                     <ul className="related-items">
                                 {arr.map((item, index) => (
                                     <li
-                                        className={`tag-item btn`}
+                                        className={`color-item btn`}
                                         key={index}
+                                        style={{backgroundColor:item,color:item==='white'||item==='yellow'||item==='black_and_white'?'black':'white',border:item==='white'&&'1px solid grey'}}
                                         onClick={(e) => setColor(item)}>
                                         {item}
                                     </li>

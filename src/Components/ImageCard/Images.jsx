@@ -8,12 +8,7 @@ const Images = ({ item }) => {
 
   const { openimage, closeimage } = useGlobalContext();
   const download = () => {
-    // var a = document.createElement('a');
-    // a.href = item.links.download;
-    // a.download = item.alt_description;
-    // document.body.appendChild(a);
-    // a.click();
-    // document.body.removeChild(a);
+  
     window.open(item.links.download);
   };
 
