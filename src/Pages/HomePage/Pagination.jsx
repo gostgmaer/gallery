@@ -7,24 +7,22 @@ const Pagination = () => {
     const {
        
         indexPage,
-        setIndexPage,
+        setIndexPage,images,
        
       } = useGlobalContext();
     
-      useEffect(() => {
-        console.log(indexPage);
-      }, [indexPage]);
+    
   return (
     <div className="Pagination">
       <div className="Pagination-element">
         <div className="pageNumber">
-          Page <span>{indexPage}</span> of <span>{Data.Images.total_pages}</span>
+          Page <span>{indexPage}</span> of <span>{images?.photos.total_pages}</span>
         </div>
 
         <div className="totalPagination">
           <div className="pageNumber">
             Showing <span>0-20 </span> of
-            <span>{Data.Images.total} Items</span>
+            <span>{images?.photos.total} Items</span>
           </div>
           <ul className="pagination-items">
             <li

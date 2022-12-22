@@ -1,34 +1,47 @@
-import React from 'react'
+import React, { Fragment, useState } from 'react'
 import { Data } from '../../Assets/StaticData/Data'
 import Images from '../../Components/ImageCard/Images'
 import { useGlobalContext } from '../../Utils/Context/Context'
-import Filter from './Filter'
+import Filter from '../../Components/Filter'
 import './Home.scss'
 import Pagination from './Pagination'
+import Loader from 'react-loaders'
 
+import { Bars, TailSpin } from 'react-loader-spinner'
 
 
 
 const Home = () => {
-  const{indexPage}=useGlobalContext()
+  const [newLoading, setNewLoading] = useState(true);
 
-  console.log(Data);
+
+  const {
+
+    indexPage,
+    images, loading
+
+  } = useGlobalContext();
+
+
   return (
     <div className='Home'>
       <div className="homeWrapper">
-          <div className="filterOption">
-            <Filter></Filter>
-          </div>
+        {loading ? <div className="loader"><TailSpin></TailSpin></div> : <Fragment><div className="filterOption">
+          <Filter></Filter>
+        </div>
           <div className="ImageCards">
             {
-              Data.Images.results.map((item)=>{
-                return ( <Images key={item.id} item={item} ></Images> )
-              })
+             loading?<TailSpin></TailSpin>: images?.photos?.results?.map((item) => {
+              return (<Images key={item.id} item={item} ></Images>)
+            })
             }
           </div>
           <div className="navigation">
-           <Pagination></Pagination>
-          </div>
+            <Pagination></Pagination>
+          </div></Fragment>}
+
+
+
       </div>
     </div>
   )
