@@ -34,24 +34,26 @@ const Imageoverlay = () => {
     setLightboxData,
     openimage,
     reqParam,
-    setImageId,realted, setRealted,
+    setImageId,
+    realted,
+    setRealted,
     image,
     setImage,
     closeimage,
-    lightboxData,expand, setExpand,
+    lightboxData,
+    expand,
+    setExpand,
   } = useGlobalContext();
   const [openTab, setopenTab] = useState(false);
-  
+
   const handleClick = (e) => {
     setIsImageLitebox(!isImageLitebox);
   };
   // setImage(image);
 
   const imgSty = {
-    objectFit:'cover'
-  }
- 
-
+    objectFit: "cover",
+  };
 
   const ContentHeader = () => {
     return (
@@ -77,8 +79,19 @@ const Imageoverlay = () => {
   const ContentImage = () => {
     return (
       <div className="image">
-        <img style={expand?{}:{objectFit:"cover"}} src={image?.urls.regular} alt="" />
-        <div className="icon">{expand?<MdFullscreen onClick={()=>setExpand(!expand)}></MdFullscreen>:<MdCloseFullscreen onClick={()=>setExpand(!expand)}></MdCloseFullscreen>}</div>
+        <img
+          style={expand ? {} : { objectFit: "cover" }}
+          src={image?.urls.regular}
+          alt=""
+        />
+        <div className="icon">
+          {expand ? (
+            <MdFullscreen onClick={() => setExpand(!expand)}></MdFullscreen>
+          ) : (
+            <MdCloseFullscreen
+              onClick={() => setExpand(!expand)}></MdCloseFullscreen>
+          )}
+        </div>
       </div>
     );
   };
@@ -119,27 +132,30 @@ const Imageoverlay = () => {
         </div>
         <div className="bottom">
           <div className="left">
-         
             <div className="listDetails">
               <MdCalendarToday></MdCalendarToday>{" "}
               <span>
                 Published{" "}
-                {moment(image?.created_at).format(
-                  "MMMM Do YYYY, h:mm a"
-                )}
+                {moment(image?.created_at).format("MMMM Do YYYY, h:mm a")}
               </span>{" "}
             </div>
-            <div className="listDetails">
-              <MdCamera></MdCamera> <span>{image?.exif.name}</span>{" "}
-            </div>
-           
+            {image?.exif?.name!==''? (
+              <div className="listDetails">
+                <MdCamera></MdCamera> <span>{image?.exif?.name}</span>
+              </div>
+            ) : (
+              ""
+            )}
           </div>
           <div className="right">
-     
             <div className="listDetails">
-              
-              <span>{image?.description}</span>
+              <span></span>
             </div>
+          </div>
+        </div>
+        <div className="description">
+          <div className="listDetails">
+            <span>{image?.description}</span>
           </div>
         </div>
       </div>

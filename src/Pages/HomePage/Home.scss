@@ -1,123 +1,120 @@
+.Home {
+  padding: 0 20px;
+  .homeWrapper {
+    .loader {
+      margin: auto;
+      width: 100%;
+    }
+    .ImageCards {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .Pagination {
+      margin: 20px 0;
+      background-color: #ffffff;
+      // padding: 10px;
+      //border-radius: 5px;
 
+      .Pagination-element {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
+        .totalPagination {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 20px;
+          .pageNumber {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+          }
+          .pagination-items {
+            list-style: none;
+            //   margin: 0 20px;
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            .active {
+              background-color: #6c757d;
+              color: white;
+            }
 
-.Home{
-    padding: 0 20px;
-    .homeWrapper{
-        .loader{
-            margin: auto;
-            width: 100%;
+            .page-item {
+              padding: 5px 10px;
+              border-radius: 0;
+              cursor: pointer;
+            }
+          }
         }
-        .ImageCards{
+      }
+    }
+    .filterOption {
+      .filter {
+        .filter-element {
+          // display: flex;
+          // justify-content: space-between;
+          // align-items: center;
+          // margin: 10px 20px;
+          .top {
+            margin: 20px 0;
+          }
+          .bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .Pagination {
             margin: 20px 0;
-            background-color: #ffffff;
-           // padding: 10px;
-            //border-radius: 5px;
-        
-            .Pagination-element {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-               
-                .totalPagination{
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 20px;
-                    .pageNumber{
-                        display: flex;
-                        justify-content: space-between;
-                        gap: 10px;
-                        align-items: center;
-        
-                    }
-                    .pagination-items {
-                        list-style: none;
-                     //   margin: 0 20px;
-                        display: flex;
-                        justify-content: end;
-                        align-items: center;
-                        .active{
-                            background-color: #6C757D;
-                            color: white;
-                        }
-            
-                        .page-item {
-                            padding: 5px 10px;
-                            border-radius: 0;
-                            cursor: pointer;
-            
-                        }
-            
-                    }
-                }
-        
-               
-        
+          }
+          .query {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-transform: capitalize;
+            .myquery {
+              font-weight: bold;
+              font-size: 16px;
             }
-        }
-        .filterOption{
-            .filter{
-                .filter-element{
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin: 10px 20px;
-                    .query{
-                        display: flex;
-                        flex-direction: column;
-                        gap: 10px;
-                        text-transform: capitalize;
-                        .myquery{
-                            font-weight: bold;
-                            font-size: 16px;
-                        }
-                    }
-                    .filterSearch{
-                        margin-right: 20px;
+          }
+          .filterSearch {
+            margin-right: 20px;
 
-                        .Orientaion{
-                            display: flex;
-                            flex-direction: column;
-                            gap: 10px;
-                            position: relative;
-                            .icon-wrapper{
-                                .hamburger{
-                                    padding: 5px 20px ;
-                                    background-color: #ececec;
-                                    color: black;
-
-                                }
-                                label{
-                                    cursor: pointer;
-                                }
-                            }
-                            .item-list{
-                               // display: none;
-                               flex-direction: column;
-                               background-color: white;
-                               justify-content: start;
-                               align-items: baseline;
-                               top: 30px;
-                               z-index: 5;
-                               cursor: pointer;
-                               padding: 5px 10px;
-                               left: 0;
-                                position: absolute;
-
-                            }
-                        }
-                    }
+            .Orientaion {
+              display: flex;
+              flex-direction: column;
+              gap: 10px;
+              position: relative;
+              .icon-wrapper {
+                .hamburger {
+                  padding: 5px 20px;
+                  background-color: #ececec;
+                  color: black;
                 }
+                label {
+                  cursor: pointer;
+                }
+              }
+              .item-list {
+                // display: none;
+                flex-direction: column;
+                background-color: white;
+                justify-content: start;
+                align-items: baseline;
+                top: 30px;
+                z-index: 5;
+                cursor: pointer;
+                padding: 5px 10px;
+                left: 0;
+                position: absolute;
+              }
             }
+          }
         }
-
+      }
     }
+  }
 }
