@@ -21,7 +21,7 @@ const Pagination = () => {
 
         <div className="totalPagination">
           <div className="pageNumber">
-            Showing <span>0-20 </span> of
+            Showing <span>0-{images?.photos?.results.length*indexPage} </span> of
             <span>{images?.photos.total} Items</span>
           </div>
           <ul className="pagination-items">
