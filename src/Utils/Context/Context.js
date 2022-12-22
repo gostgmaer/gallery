@@ -9,6 +9,7 @@ const AppProvider = ({ children }) => {
   const [loading, setloading] = useState(true);
   const [imageIndex, setimageIndex] = useState(0);
   const [indexPage, setIndexPage] = useState(1);
+  const [orientation, setOrientation] = useState('');
 
   const onclickOpenImageLightBox = (id) => {
     setloading(true);
@@ -40,14 +41,14 @@ const AppProvider = ({ children }) => {
         setLightboxData,
         lightboxData,
         isSidebar,
-        setisSidebar,
+        setisSidebar,orientation, setOrientation,
         setkeyword,
         calculateDiscount,
         onclickOpenImageLightBox,
 
         loading,
 
-        indexPage,
+        indexPage,keyword,
         setIndexPage,
 
         imageIndex,

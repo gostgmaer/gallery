@@ -2,7 +2,7 @@ import React from 'react'
 import { MdDownload } from 'react-icons/md';
 import './Images.scss'
 const Images = ({item}) => {
-  console.log(item);
+ 
   return (
 
     <div className='Image-card'>

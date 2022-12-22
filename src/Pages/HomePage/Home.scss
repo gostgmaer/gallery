@@ -1,5 +1,5 @@
 .Home{
-    padding: 20px;
+    padding: 0 20px;
     .homeWrapper{
         .ImageCards{
             display: flex;
@@ -7,6 +7,108 @@
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
+        }
+        .Pagination {
+            margin: 20px 0;
+            background-color: #ffffff;
+           // padding: 10px;
+            //border-radius: 5px;
+        
+            .Pagination-element {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+               
+                .totalPagination{
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    .pageNumber{
+                        display: flex;
+                        justify-content: space-between;
+                        gap: 10px;
+                        align-items: center;
+        
+                    }
+                    .pagination-items {
+                        list-style: none;
+                     //   margin: 0 20px;
+                        display: flex;
+                        justify-content: end;
+                        align-items: center;
+                        .active{
+                            background-color: #6C757D;
+                            color: white;
+                        }
+            
+                        .page-item {
+                            padding: 5px 10px;
+                            border-radius: 0;
+                            cursor: pointer;
+            
+                        }
+            
+                    }
+                }
+        
+               
+        
+            }
+        }
+        .filterOption{
+            .filter{
+                .filter-element{
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin: 10px 20px;
+                    .query{
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                        text-transform: capitalize;
+                        .myquery{
+                            font-weight: bold;
+                            font-size: 16px;
+                        }
+                    }
+                    .filterSearch{
+                        margin-right: 20px;
+
+                        .Orientaion{
+                            display: flex;
+                            flex-direction: column;
+                            gap: 10px;
+                            position: relative;
+                            .icon-wrapper{
+                                .hamburger{
+                                    padding: 5px 20px ;
+                                    background-color: #ececec;
+                                    color: black;
+
+                                }
+                                label{
+                                    cursor: pointer;
+                                }
+                            }
+                            .item-list{
+                               // display: none;
+                               flex-direction: column;
+                               background-color: white;
+                               justify-content: start;
+                               align-items: baseline;
+                               top: 30px;
+                               z-index: 5;
+                               cursor: pointer;
+                               padding: 5px 10px;
+                               left: 0;
+                                position: absolute;
+
+                            }
+                        }
+                    }
+                }
+            }
         }
 
     }

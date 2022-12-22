@@ -1,16 +1,24 @@
 import React from 'react'
 import { Data } from '../../Assets/StaticData/Data'
 import Images from '../../Components/ImageCard/Images'
+import { useGlobalContext } from '../../Utils/Context/Context'
+import Filter from './Filter'
 import './Home.scss'
+import Pagination from './Pagination'
 
 
 
 
 const Home = () => {
+  const{indexPage}=useGlobalContext()
+
+  console.log(Data);
   return (
     <div className='Home'>
       <div className="homeWrapper">
-          <div className="filterOption"></div>
+          <div className="filterOption">
+            <Filter></Filter>
+          </div>
           <div className="ImageCards">
             {
               Data.Images.results.map((item)=>{
@@ -18,7 +26,9 @@ const Home = () => {
               })
             }
           </div>
-          <div className="navigation"></div>
+          <div className="navigation">
+           <Pagination></Pagination>
+          </div>
       </div>
     </div>
   )
