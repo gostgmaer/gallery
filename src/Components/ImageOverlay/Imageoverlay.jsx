@@ -36,7 +36,7 @@ const Imageoverlay = () => {
     reqParam,
     setImageId,
     realted,
-    setRealted,
+    setRealted, setkeyword,
     image,
     setImage,
     closeimage,
@@ -75,7 +75,7 @@ const Imageoverlay = () => {
                 window.open(image?.links?.download);
               }}
               className="btn">
-           
+
               Download Image
             </button>
           </div>
@@ -177,7 +177,24 @@ const Imageoverlay = () => {
       </div>
     );
   };
-  const RelatedCollection = () => {};
+  const RelatedCollection = () => { };
+  const RelatedTags = () => {
+    return (
+      <div className="related">
+        <div className="title">Related Tags</div>
+        <ul className="related-items">
+          {image?.tags.map((item, index) => (
+            <li
+              className={`tag-item btn`}
+              key={index}
+              onClick={(e) => setkeyword(item.title)}>
+              {item.title}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
   const Arrow = () => {
     return (
       <div className="arrow">
@@ -226,7 +243,9 @@ const Imageoverlay = () => {
               <RelatedImages></RelatedImages>
             </div>
             <div className="relatedCollection"></div>
-            <div className="realtedTage"></div>
+            <div className="realtedTage">
+              <RelatedTags></RelatedTags>
+            </div>
           </div>
 
           <div className="overlayfooter"></div>

@@ -30,7 +30,15 @@
    border: none;
 }
 .tag-item{
-    padding: 5px 10px;
+    padding: 5px 15px;
+  // min-width: 100px;
+    text-align: center;
     background-color: #d3d3d3;
       border: none;
+}
+.related{
+
+    .related-items{
+       // width: 200%;
+    }
 }

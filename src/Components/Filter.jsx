@@ -9,14 +9,14 @@ const Filter = () => {
         indexPage,
         setIndexPage, images,
         keyword,
-       
-        setkeyword,color, setColor,
+
+        setkeyword, color, setColor,
         orientation,
         setOrientation,
     } = useGlobalContext();
 
 
-    const arr =["black_and_white", "black", "white", "yellow", "orange", "red", "purple", "magenta", 'green', "teal", "blue"]
+    const arr = ["black_and_white", "black", "white", "yellow", "orange", "red", "purple", "magenta", 'green', "teal", "blue"]
 
 
     // eslint-disable-next-line no-undef
@@ -27,6 +27,33 @@ const Filter = () => {
     return (
         <div className="filter">
             <div className="filter-element">
+                
+                <div className="bottom">
+                    <div className="left">
+                        <ul className="related-items">
+                            {arr.map((item, index) => (
+                                <li
+                                    className={`color-item btn`}
+                                    key={index}
+                                    style={{ backgroundColor: item, color: item === 'white' || item === 'yellow' || item === 'black_and_white' ? 'black' : 'white', border: item === 'white' && '1px solid grey' }}
+                                    onClick={(e) => setColor(item)}>
+                                    {item}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="right">
+                        <div className="filterSearch">
+                            <div className="Orientaion">
+                                <ItemsMenu></ItemsMenu>
+                            </div>
+                            {/* <div className="color">
+                        Showing <span>0-20 </span> of
+                        <span>{Data.Images.total} Items</span>
+                    </div> */}
+                        </div>
+                    </div>
+                </div>
                 <div className="top">
                     <div className="query">
                         <div className="myquery">{keyword}</div>
@@ -44,33 +71,6 @@ const Filter = () => {
                         </div>
                     </div>
                 </div>
-                <div className="bottom">
-                    <div className="left">
-                    <ul className="related-items">
-                                {arr.map((item, index) => (
-                                    <li
-                                        className={`color-item btn`}
-                                        key={index}
-                                        style={{backgroundColor:item,color:item==='white'||item==='yellow'||item==='black_and_white'?'black':'white',border:item==='white'&&'1px solid grey'}}
-                                        onClick={(e) => setColor(item)}>
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                    </div>
-                    <div className="right">
-                        <div className="filterSearch">
-                            <div className="Orientaion">
-                                <ItemsMenu></ItemsMenu>
-                            </div>
-                            {/* <div className="color">
-                        Showing <span>0-20 </span> of
-                        <span>{Data.Images.total} Items</span>
-                    </div> */}
-                        </div>
-                    </div>
-                </div>
-
 
 
             </div>

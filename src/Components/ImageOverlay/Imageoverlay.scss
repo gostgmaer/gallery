@@ -295,11 +295,11 @@
     height: 420px;
     object-fit: contain;
   }
-  .icon{
+  .icon {
     position: absolute;
     top: 10px;
     right: 10px;
-    svg{
+    svg {
       width: 20px;
       height: 20px;
       padding: 5px;
@@ -308,7 +308,6 @@
       //background-color: #6d6d6d;
       border: 1px solid;
     }
-
   }
 }
 .relatedImages {
@@ -367,6 +366,34 @@
       align-items: center;
       // flex-direction: column;
       gap: 10px;
+    }
+  }
+}
+
+.realtedTage {
+ 
+  .related {
+    margin: 20px 30px;
+    padding: 20px 0;
+    .title{
+      font-weight: 500;
+      font-size: 20px;
+    margin: 20px 0;
+    }
+    .tag-item {
+      padding: 5px 15px;
+      // min-width: 100px;
+      text-align: center;
+      background-color: #d3d3d3;
+      border: none;
+      &:hover{
+        background-color: blue;
+        color: wheat;
+      }
+    }
+    .related-items {
+      flex-wrap: wrap;
+     // margin: 10px 32px 20px 32px;
     }
   }
 }
