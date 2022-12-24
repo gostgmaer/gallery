@@ -16302,10 +16302,10 @@ export const Data = {
         "text": "portrait"
       }, {
         "id": 2,
-        "text": "Landscape"
+        "text": "landscape"
       }, {
         "id": 3,
-        "text": "Square"
+        "text": "squarish"
       }],'singleImage':{
         "id": "UBhpOIHnazM",
         "created_at": "2017-10-29T12:53:04Z",
