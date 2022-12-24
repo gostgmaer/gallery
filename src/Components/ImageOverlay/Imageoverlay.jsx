@@ -36,7 +36,7 @@ const Imageoverlay = () => {
     reqParam,
     setImageId,
     realted,
-    setRealted,
+    setRealted, setkeyword,
     image,
     setImage,
     closeimage,
@@ -70,7 +70,14 @@ const Imageoverlay = () => {
             <MdFavorite></MdFavorite>
           </div>
           <div className="download">
-            <ItemsMenu event={""} isarrow={true}></ItemsMenu>
+            <button
+              onClick={() => {
+                window.open(image?.links?.download);
+              }}
+              className="btn">
+
+              Download Image
+            </button>
           </div>
         </div>
       </div>
@@ -139,7 +146,7 @@ const Imageoverlay = () => {
                 {moment(image?.created_at).format("MMMM Do YYYY, h:mm a")}
               </span>{" "}
             </div>
-            {image?.exif?.name!==''? (
+            {image?.exif?.name !== "" ? (
               <div className="listDetails">
                 <MdCamera></MdCamera> <span>{image?.exif?.name}</span>
               </div>
@@ -170,7 +177,24 @@ const Imageoverlay = () => {
       </div>
     );
   };
-  const RelatedCollection = () => {};
+  const RelatedCollection = () => { };
+  const RelatedTags = () => {
+    return (
+      <div className="related">
+        <div className="title">Related Tags</div>
+        <ul className="related-items">
+          {image?.tags.map((item, index) => (
+            <li
+              className={`tag-item btn`}
+              key={index}
+              onClick={(e) => setkeyword(item.title)}>
+              {item.title}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
   const Arrow = () => {
     return (
       <div className="arrow">
@@ -219,7 +243,9 @@ const Imageoverlay = () => {
               <RelatedImages></RelatedImages>
             </div>
             <div className="relatedCollection"></div>
-            <div className="realtedTage"></div>
+            <div className="realtedTage">
+              <RelatedTags></RelatedTags>
+            </div>
           </div>
 
           <div className="overlayfooter"></div>
