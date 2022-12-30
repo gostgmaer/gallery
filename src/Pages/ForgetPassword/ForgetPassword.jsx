@@ -1,18 +1,46 @@
 import React, { useState } from "react";
 import { MdImage, MdPerson } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../Utils/Context/AuthContext";
 import './ForgetPassword.scss'
+
 const ForgetPassword = () => {
   const [emailaddress, setEmailaddress] = useState("");
+  const [ispasswordSuccess, setIspasswordSuccess] = useState(false);
+  const [, set] = useState();
 
+  const {forgetPassword} =useAuth()
 
-  const clickpassHandler =()=>{
+  const resetPasswordHandler =()=>{
+    try {
+      forgetPassword(emailaddress)
+    setIspasswordSuccess(true)
     console.log(emailaddress);
+    } catch (error) {
+      console.log(error.message);
+      
+    }
+  }
+
+  const AfterPassEmailSend =()=>{
+   return <div className="ForgetPasswordwrapper">
+    <div className="logo">
+      <MdImage></MdImage>
+      <div>Please Check Your Email for Password Reset Instructions</div>
+    </div>
+ 
+    <div className="buttons">
+      {/* <div className="top"></div> */}
+      <p className="login">
+          <Link className="btn" to={"/login"}>Return To Signin</Link>
+        </p>
+    </div>
+  </div>
   }
 
   return (
     <div className="ForgetPassword">
-      <div className="ForgetPasswordwrapper">
+     {ispasswordSuccess?<AfterPassEmailSend></AfterPassEmailSend>: <div className="ForgetPasswordwrapper">
         <div className="logo">
           <MdImage></MdImage>
         </div>
@@ -35,7 +63,7 @@ const ForgetPassword = () => {
         <div className="buttons">
           {/* <div className="top"></div> */}
           <div className="bottom">
-            <button className="login btn" onClick={clickpassHandler}>
+            <button className="login btn" onClick={resetPasswordHandler}>
               Forget Password
             </button>
             <p className="signup">
@@ -43,7 +71,7 @@ const ForgetPassword = () => {
             </p>
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

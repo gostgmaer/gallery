@@ -13,6 +13,17 @@
     .left {
       flex: 2;
       font-weight: 500;
+      .logout{
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        text-transform: capitalize;
+        cursor: pointer;
+        // svg{
+        //   width: 20px;
+        //   height: 20px;
+        // }
+      }
 
       a {
         display: flex;
@@ -25,14 +36,19 @@
     }
 
     .logo {
+      text-align: center;
       flex: 1;
       font-weight: bold;
       text-transform: uppercase;
       font-size: 20px;
 
       cursor: pointer;
-      text-decoration: none;
-      color: initial;
+      a{text-decoration: none;
+        color: initial; &:hover{
+          color: rgb(8, 72, 250);
+          
+        }}
+     
     }
 
     .right {

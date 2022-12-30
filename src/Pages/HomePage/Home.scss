@@ -81,7 +81,7 @@
             }
           }
           .filterSearch {
-            margin-right: 20px;
+           
 
             .Orientaion {
               display: flex;
@@ -93,6 +93,9 @@
                   padding: 5px 20px;
                   background-color: #ececec;
                   color: black;
+                  &:hover{
+                    background-color: aqua;
+                  }
                 }
                 label {
                   cursor: pointer;
@@ -104,10 +107,11 @@
                 background-color: white;
                 justify-content: start;
                 align-items: baseline;
+                
                 top: 30px;
                 z-index: 5;
                 cursor: pointer;
-                padding: 5px 10px;
+                padding: 0 10px;
                 left: 0;
                 position: absolute;
               }

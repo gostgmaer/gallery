@@ -1,19 +1,34 @@
 import React, { useState } from "react";
 import { MdImage, MdLock, MdPerson } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link,unstable_HistoryRouter, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../Utils/Context/AuthContext";
 import "./Login.scss";
 const Login = () => {
+  const { signin,currentUser } = useAuth();
   const [username, setUsername] = useState("");
   const [pass, setPass] = useState("");
   const [remember, setRemember] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const redirectPath = location.state?.path || "/";
 
-  const clickandler = () => {
+  const clickandler = async () => {
     const data = {
       username: username,
       pass: pass,
       isremeber: remember,
     };
     console.log(data);
+    try {
+      setLoading(true);
+      setError("");
+      await signin(username, pass);
+      navigate(redirectPath, { replace: true });
+    } catch (e) {
+      setError("Faild to Signin");
+    }
   };
 
   return (
