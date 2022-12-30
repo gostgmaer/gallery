@@ -19,7 +19,7 @@ const ItemsMenu = ({isarrow,event}) => {
             <label
                     className="hamburger btn menu-button"
                     onClick={() => setopenTab(!openTab)}>
-                    Orientation {}
+                    Orientation 
                 </label>
                 {isarrow?<label
                     className="hamburger btn menu-button"

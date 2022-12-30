@@ -8,9 +8,11 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { AppProvider } from "./Utils/Context/Context";
 import 'loaders.css/src/animations/line-scale.scss'
+import { AuthProvider } from "./Utils/Context/AuthContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
+    
     <AppProvider>
       <BrowserRouter>
         <App />
