@@ -1,3 +1,4 @@
+import FileSaver from "file-saver";
 import React, { useState, useEffect, useContext } from "react";
 import InvokeAPI from "../Apicall";
 // @ts-ignore
@@ -30,6 +31,24 @@ const AppProvider = ({ children }) => {
 
   const reqParam = {
     client_id: "i5Kt1JQq4jZRXZeB2oO8D3J8avpZ_Xgy3ShUlYFNHh4",
+  };
+
+  // const DownloadImage = (dataurl, filename) => {
+  //   const link = document.createElement("a");
+  //   link.href = dataurl;
+  //   link.download = filename;
+  //   console.log(link);
+  //   link.click('_blank')
+  //  // link.click();
+    
+  // };
+
+  const downloadFile = (file, fileName) => {
+    //     var blob = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
+    // FileSaver.saveAs(blob, "hello world.txt");
+    // var blob = new Blob([file], { type: fielType });
+    // FileSaver.saveAs(blob, fileName);
+    FileSaver.saveAs(file, fileName);
   };
 
   const SearchImages = async () => {
@@ -78,7 +97,7 @@ const AppProvider = ({ children }) => {
 
   useEffect(() => {
     SearchImages();
-  }, [indexPage,keyword,orientation,color,order]);
+  }, [indexPage, keyword, orientation, color, order]);
   // useEffect(() => {
 
   //   SearchImages()
@@ -123,15 +142,19 @@ const AppProvider = ({ children }) => {
         setisSidebar,
         images,
         orientation,
-        setOrientation,error, setError,
-        setkeyword,color, setColor,
+        setOrientation,
+        error,
+        setError,
+        setkeyword,
+        color,
+        setColor,
         calculateDiscount,
         onclickOpenImageLightBox,
         openimage,
         closeimage,
         realted,
         setRealted,
-
+       
         loading,
         reqParam,
         image,
@@ -143,7 +166,7 @@ const AppProvider = ({ children }) => {
 
         imageIndex,
         setimageIndex,
-        setloading,
+        setloading,downloadFile,
       }}>
       {children}
     </AppContext.Provider>

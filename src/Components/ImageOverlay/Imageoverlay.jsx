@@ -33,7 +33,7 @@ const Imageoverlay = () => {
     setloading,
     setLightboxData,
     openimage,
-    reqParam,
+    reqParam,DownloadImage,
     setImageId,
     realted,
     setRealted, setkeyword,
@@ -72,7 +72,7 @@ const Imageoverlay = () => {
           <div className="download">
             <button
               onClick={() => {
-                window.open(image?.links?.download);
+                DownloadImage(`${image?.links?.download}`,`${image?.alt_description}.jpg`)
               }}
               className="btn">
 
