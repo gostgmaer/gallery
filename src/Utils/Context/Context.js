@@ -17,6 +17,7 @@ const AppProvider = ({ children }) => {
   const [images, setImages] = useState(null);
   const [image, setImage] = useState(null);
   const [color, setColor] = useState(null);
+  const [perpage, setPerpage] = useState(12);
   const [realted, setRealted] = useState(null);
   const [expand, setExpand] = useState(true);
   const [order, setOrder] = useState(null);
@@ -54,7 +55,7 @@ const AppProvider = ({ children }) => {
   const SearchImages = async () => {
     let imagesParam = {
       page: indexPage,
-      per_page: 28,
+      per_page: perpage,
       query: keyword,
       order_by: order,
       color: color,
@@ -70,7 +71,7 @@ const AppProvider = ({ children }) => {
     );
 
     setloading(true);
-    const res = await InvokeAPI(`search`, "get", "", "", query);
+    const res = await InvokeAPI(`search/photos`, "get", "", "", query);
 
     setImages(res);
     setloading(false);
@@ -97,7 +98,7 @@ const AppProvider = ({ children }) => {
 
   useEffect(() => {
     SearchImages();
-  }, [indexPage, keyword, orientation, color, order]);
+  }, [indexPage, keyword, orientation, color, order,perpage]);
   // useEffect(() => {
 
   //   SearchImages()
@@ -135,7 +136,7 @@ const AppProvider = ({ children }) => {
         setLightboxData,
         lightboxData,
         imageId,
-        setImageId,
+        setImageId,perpage,
         expand,
         setExpand,
         isSidebar,
@@ -154,7 +155,7 @@ const AppProvider = ({ children }) => {
         closeimage,
         realted,
         setRealted,
-       
+        setPerpage,
         loading,
         reqParam,
         image,

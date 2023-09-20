@@ -1,56 +1,61 @@
-// @ts-nocheck
-import React, { useEffect } from 'react'
-import { Data } from '../../Assets/StaticData/Data';
-import { useGlobalContext } from '../../Utils/Context/Context';
+import React from 'react';
 
-const Pagination = () => {
-    const {
-       
-        indexPage,
-        setIndexPage,images,
-       
-      } = useGlobalContext();
-    
-    
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      onPageChange(newPage);
+    }
+  };
+
   return (
-    <div className="Pagination">
-      <div className="Pagination-element">
-        <div className="pageNumber">
-          Page <span>{indexPage}</span> of <span>{images?.photos.total_pages}</span>
-        </div>
-
-        <div className="totalPagination">
-          <div className="pageNumber">
-            Showing <span>0-{images?.photos?.results.length*indexPage} </span> of
-            <span>{images?.photos.total} Items</span>
-          </div>
-          <ul className="pagination-items">
-            <li
-              className={`page-item btn ${indexPage === 1 ? "disabled" : ""}`}
-              onClick={(e) => setIndexPage(indexPage < 2 ? 1 : indexPage - 1)}>
-              Previous
-            </li>
-
-            {Array.from(Array(5).keys()).map((item) => (
-              <li
-                className={`page-item btn ${
-                  indexPage === item + 1 ? "active" : ""
-                }`}
-                key={item}
-                onClick={(e) => setIndexPage(Number(e.target.innerText))}>
-                {item + 1}
-              </li>
-            ))}
-            <li
-              className="page-item btn"
-              onClick={(e) => setIndexPage(indexPage + 1)}>
-              Next
-            </li>
-          </ul>
-        </div>
-      </div>
+    <div className="pagination-container">
+      <button
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="pagination-button"
+      >
+        Previous
+      </button>
+      <span className="pagination-status">
+        Page {currentPage} of {totalPages}
+      </span>
+      <button
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="pagination-button"
+      >
+        Next
+      </button>
     </div>
-  )
-}
+  );
+};
 
-export default Pagination
+export default Pagination;
+
+
+export const ItemsPerPagePicker = ({ itemsPerPage, onItemsPerPageChange }) => {
+  const handleItemsPerPageChange = (e) => {
+    const newValue = parseInt(e.target.value);
+    onItemsPerPageChange(newValue);
+  };
+
+  return (
+<div className="items">
+<div className="items-per-page-picker">
+      <label htmlFor="itemsPerPage">Items per page:</label>
+      <select
+        id="itemsPerPage"
+        value={itemsPerPage}
+        onChange={handleItemsPerPageChange}
+        defaultValue={4}
+      >
+        <option value="4" >4</option>
+        <option value="12">12</option>
+        <option value="24">24</option>
+        <option value="30">30</option>
+      </select>
+    </div>
+    <div className="total-item"></div>
+</div>
+  );
+};
