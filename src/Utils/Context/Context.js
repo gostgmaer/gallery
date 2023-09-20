@@ -1,3 +1,4 @@
+import FileSaver from "file-saver";
 import React, { useState, useEffect, useContext } from "react";
 import InvokeAPI from "../Apicall";
 // @ts-ignore
@@ -16,6 +17,7 @@ const AppProvider = ({ children }) => {
   const [images, setImages] = useState(null);
   const [image, setImage] = useState(null);
   const [color, setColor] = useState(null);
+  const [perpage, setPerpage] = useState(12);
   const [realted, setRealted] = useState(null);
   const [expand, setExpand] = useState(true);
   const [order, setOrder] = useState(null);
@@ -32,10 +34,28 @@ const AppProvider = ({ children }) => {
     client_id: "i5Kt1JQq4jZRXZeB2oO8D3J8avpZ_Xgy3ShUlYFNHh4",
   };
 
+  // const DownloadImage = (dataurl, filename) => {
+  //   const link = document.createElement("a");
+  //   link.href = dataurl;
+  //   link.download = filename;
+  //   console.log(link);
+  //   link.click('_blank')
+  //  // link.click();
+    
+  // };
+
+  const downloadFile = (file, fileName) => {
+    //     var blob = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
+    // FileSaver.saveAs(blob, "hello world.txt");
+    // var blob = new Blob([file], { type: fielType });
+    // FileSaver.saveAs(blob, fileName);
+    FileSaver.saveAs(file, fileName);
+  };
+
   const SearchImages = async () => {
     let imagesParam = {
       page: indexPage,
-      per_page: 28,
+      per_page: perpage,
       query: keyword,
       order_by: order,
       color: color,
@@ -51,7 +71,7 @@ const AppProvider = ({ children }) => {
     );
 
     setloading(true);
-    const res = await InvokeAPI(`search`, "get", "", "", query);
+    const res = await InvokeAPI(`search/photos`, "get", "", "", query);
 
     setImages(res);
     setloading(false);
@@ -78,7 +98,7 @@ const AppProvider = ({ children }) => {
 
   useEffect(() => {
     SearchImages();
-  }, [indexPage,keyword,orientation,color,order]);
+  }, [indexPage, keyword, orientation, color, order,perpage]);
   // useEffect(() => {
 
   //   SearchImages()
@@ -116,22 +136,26 @@ const AppProvider = ({ children }) => {
         setLightboxData,
         lightboxData,
         imageId,
-        setImageId,
+        setImageId,perpage,
         expand,
         setExpand,
         isSidebar,
         setisSidebar,
         images,
         orientation,
-        setOrientation,error, setError,
-        setkeyword,color, setColor,
+        setOrientation,
+        error,
+        setError,
+        setkeyword,
+        color,
+        setColor,
         calculateDiscount,
         onclickOpenImageLightBox,
         openimage,
         closeimage,
         realted,
         setRealted,
-
+        setPerpage,
         loading,
         reqParam,
         image,
@@ -143,7 +167,7 @@ const AppProvider = ({ children }) => {
 
         imageIndex,
         setimageIndex,
-        setloading,
+        setloading,downloadFile,
       }}>
       {children}
     </AppContext.Provider>
