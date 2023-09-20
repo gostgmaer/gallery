@@ -22,7 +22,7 @@ const Home = () => {
  // Change this to your desired page size
   const startIndex = (indexPage - 1) * perpage;
   const endIndex = startIndex + perpage;
-  const itemsToDisplay = images.results.slice(startIndex, endIndex);
+  const itemsToDisplay = images?.results.slice(startIndex, endIndex);
 
   const handleItemsPerPageChange = (newItemsPerPage) => {
     // Update the itemsPerPage state and reset the current page to 1

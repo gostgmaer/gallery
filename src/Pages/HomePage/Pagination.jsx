@@ -47,7 +47,7 @@ export const ItemsPerPagePicker = ({ itemsPerPage, onItemsPerPageChange }) => {
         id="itemsPerPage"
         value={itemsPerPage}
         onChange={handleItemsPerPageChange}
-        defaultValue={4}
+      
       >
         <option value="4" >4</option>
         <option value="12">12</option>
