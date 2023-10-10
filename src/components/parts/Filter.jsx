@@ -1,8 +1,7 @@
 // @ts-nocheck
 import React, { Fragment, useEffect, useState } from "react";
-import { Data } from "../Assets/StaticData/Data";
-import { useGlobalContext } from "../Utils/Context/Context";
 import ItemsMenu from "./MenuItem";
+import { useGlobalAppContext } from "@/context/context";
 
 const Filter = () => {
   const {
@@ -10,13 +9,12 @@ const Filter = () => {
     setIndexPage,
     images,
     keyword,
-
     setkeyword,
     color,
     setColor,
     orientation,
     setOrientation,
-  } = useGlobalContext();
+  } = useGlobalAppContext();
 
   const arr = [
     "black_and_white",

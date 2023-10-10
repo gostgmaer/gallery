@@ -9,10 +9,9 @@ import { post } from "@/lib/network/http";
 export const AuthContext = React.createContext(null);
 
 export const AuthContextProvider = ({ children }) => {
-  const { loader, loaderFalse, loaderTrue } = useGlobalAppContext();
   const [user, setUser] = React.useState(undefined);
   const [userId, setUserId] = useState(null);
-  const [previous, setPrevious] = useState('');
+  const [previous, setPrevious] = useState("");
 
   const router = useRouter();
 
@@ -29,9 +28,9 @@ export const AuthContextProvider = ({ children }) => {
       });
       setUser(res);
       setUserId({ ...res.user, user_id: res.user._id });
-    
+
       router.push(`/${previous}`);
-    
+
       return res;
     } catch (error) {}
   };
@@ -41,7 +40,6 @@ export const AuthContextProvider = ({ children }) => {
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     }
     try {
-      loaderTrue();
       const res = await post("/user/auth/signout");
       if (res.statusCode == "200") {
         sessionStorage.removeItem("user");
@@ -52,17 +50,12 @@ export const AuthContextProvider = ({ children }) => {
         setUser(undefined);
         setUserId(undefined);
         router.push("/auth/login");
-
-        loaderFalse();
       }
-    } catch (error) {
-      loaderFalse();
-    }
+    } catch (error) {}
   };
 
   const unsubscribe = async () => {
     try {
-      loaderTrue();
       const cookies = parseCookies();
       if (cookies.accessToken) {
         const decodedToken = jwt_decode(cookies.accessToken);
@@ -73,11 +66,9 @@ export const AuthContextProvider = ({ children }) => {
           setUser(res);
         }
       }
-      loaderFalse();
     } catch (error) {
       setUser(undefined);
       setUserId(undefined);
-      loaderFalse();
     }
   };
   React.useEffect(() => {
@@ -85,7 +76,9 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, handleLoginAuth, Logout, userId,setPrevious }}>
+    <AuthContext.Provider
+      value={{ user, handleLoginAuth, Logout, userId, setPrevious }}
+    >
       {children}
     </AuthContext.Provider>
   );

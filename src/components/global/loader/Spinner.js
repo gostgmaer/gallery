@@ -2,7 +2,6 @@
 "use client";
 import React from "react";
 import styles from "./loader.module.css";
-import { useGlobalAppContext } from "@/context/context";
 
 const Spinner = () => {
   return (

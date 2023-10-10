@@ -18856,14 +18856,20 @@ export const Data = {
     {
       id: 1,
       text: "portrait",
+      value: "portrait",
+      label: "portrait",
     },
     {
       id: 2,
       text: "landscape",
+      value: "landscape",
+      label: "landscape",
     },
     {
       id: 3,
       text: "squarish",
+      value: "squarish",
+      label: "squarish",
     },
   ],
   singleImage: {
