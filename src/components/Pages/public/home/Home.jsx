@@ -1,5 +1,5 @@
 "use client";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Images from "@/components/parts/ImageCard/Images";
 import { useGlobalAppContext } from "@/context/context";
 import Filter from "@/components/parts/Filter";
@@ -12,28 +12,43 @@ const Home = () => {
     indexPage,
     setIndexPage,
     images,
-    loading,
-    setPerpage,
-    perpage,
     orientation,
     setOrientation,
+    SearchImages,
   } = useGlobalAppContext();
-  const [totalPages, setTotalPages] = useState(0);
-  const [newLoading, setNewLoading] = useState(true);
-  // const [currentPage, setCurrentPage] = useState(1);
-  const handlePageChange = (newPage) => {
-    setIndexPage(newPage);
-    // You can also fetch data for the new page here
-  };
-  // Change this to your desired page size
-  const startIndex = (indexPage - 1) * perpage;
-  const endIndex = startIndex + perpage;
-  const itemsToDisplay = images?.results.slice(startIndex, endIndex);
 
-  const handleItemsPerPageChange = (newItemsPerPage) => {
-    // Update the itemsPerPage state and reset the current page to 1
-    setPerpage(newItemsPerPage);
+  const [mydata, setMydata] = useState([]);
+
+  const fetchMoreData = async () => {
+    const data = await SearchImages();
+    
+    var mynewData = [...data.results, ...mydata]
+    console.log(mynewData);
+    setMydata([...data.results, ...mydata]);
+    setIndexPage(indexPage + 1);
+    console.log(mydata);
   };
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight
+    ) {
+      fetchMoreData();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    fetchMoreData();
+  }, []);
 
   return (
     <div className="Home">
@@ -51,7 +66,7 @@ const Home = () => {
       </div>
       <div className="image-listing">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {images?.results?.map((item) => {
+          {mydata.map((item) => {
             return <Images key={item.id} item={item}></Images>;
           })}
         </div>
