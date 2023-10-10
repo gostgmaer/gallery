@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { post } from "@/lib/http";
+import { post } from "@/lib/network/http";
 import { notifyerror } from "@/lib/notify/notice";
 import PasswordField from "@/components/global/fields/PasswordField";
 import { useAuthContext } from "@/context/authContext";
-import { useAxios } from "@/lib/interceptors";
+import { useAxios } from "@/lib/network/interceptors";
 const ResetPassword = () => {
   const { handleLoginAuth, user, userId } = useAuthContext();
   const [axios, spinner] = useAxios();

@@ -1,4 +1,4 @@
-import Signup from "@/components/Pages/public/Register";
+import Signup from "@/components/Pages/public/auth/Register";
 
 const Register = () => {
 

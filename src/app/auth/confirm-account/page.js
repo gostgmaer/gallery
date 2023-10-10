@@ -1,5 +1,4 @@
-import ConfirmAccount from "@/components/Pages/public/confirmAccount";
-
+import ConfirmAccount from "@/components/Pages/public/auth/confirmAccount";
 
 const Index = () => {
   return (

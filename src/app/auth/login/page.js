@@ -1,4 +1,5 @@
-import Login from "@/components/Pages/public/Login";
+import Login from "@/components/Pages/public/auth/Login";
+
 
 const Index = () => {
 

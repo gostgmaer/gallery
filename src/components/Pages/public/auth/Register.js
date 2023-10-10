@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import PasswordField from "@/components/global/fields/PasswordField";
-import { post } from "@/lib/http";
+import { post } from "@/lib/network/http";
 import { useAuthContext } from "@/context/authContext";
-import { useAxios } from "@/lib/interceptors";
+import { useAxios } from "@/lib/network/interceptors";
 const Signup = () => {
   const { handleLoginAuth, user, userId } = useAuthContext();
   const [axios, spinner] = useAxios();

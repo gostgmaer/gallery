@@ -1,4 +1,4 @@
-import ResetPassword from "@/components/Pages/public/resetPassword";
+import ResetPassword from "@/components/Pages/public/auth/resetPassword";
 
 
 const Index = () => {

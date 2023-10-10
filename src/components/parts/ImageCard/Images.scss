@@ -1,0 +1,90 @@
+.Image-card {
+    width: 24%;
+    margin: 10px 0;
+    position: relative;
+    border-radius: 5px;
+    cursor: zoom-in;
+    overflow: hidden;
+
+
+    .imageBlock {
+
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+
+        img {
+            width: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+            
+             transition: 5s all ease-in;
+            height: 320px;
+                box-shadow: 2px 13px 30px -9px rgba(0, 0, 0, 0.64);
+            -webkit-box-shadow: 2px 13px 30px -9px rgba(0, 0, 0, 0.64);
+            -moz-box-shadow: 2px 13px 30px -9px rgba(0, 0, 0, 0.64);
+            
+            &:hover{
+                // transition: 5s all ease-in-out;
+                -ms-transform: scale(1.5);
+                /* IE 9 */
+                -webkit-transform: scale(1.5);
+                /* Safari 3-8 */
+                transform: scale(1.5);
+                
+
+             }
+
+        }
+
+
+    }
+
+    .userBlock {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+
+        .imageInfo {
+            margin: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+
+            .user {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-size: 13px;
+                gap: 5px;
+                font-weight: 500;
+                cursor: pointer;
+
+                img {
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+
+                }
+
+            }
+
+            .action {
+                svg {
+                    width: 25px;
+                    background-color: rgb(255, 255, 255);
+                    height: 25px;
+                    color: black;
+                    padding: 5px;
+                    border-radius: 10px;
+                    cursor: pointer;
+
+                }
+
+            }
+
+        }
+    }
+}
