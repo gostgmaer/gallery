@@ -1,13 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import signIn from "@/config/firebase/auth/signin";
 import { useAuthContext } from "@/context/authContext";
 import Link from "next/link";
 import PasswordField from "@/components/global/fields/PasswordField";
 import { useGlobalAppContext } from "@/context/context";
-import Loader from "@/utils/loader/Loader";
-import { useAxios } from "@/lib/interceptors";
+import { useAxios } from "@/lib/network/interceptors";
 const Login = () => {
   const { handleLoginAuth, user, userId } = useAuthContext();
   const { loader, loaderFalse, loaderTrue } = useGlobalAppContext();
@@ -26,7 +24,6 @@ const Login = () => {
   };
 
   const handleLogin = async (e) => {
-  
     e.preventDefault();
     const body = {
       email: formData.email,
@@ -36,27 +33,19 @@ const Login = () => {
     try {
       const res = await handleLoginAuth(body);
       if (res) {
-       
       }
-    } catch (error) {
-     
-    }
-
+    } catch (error) {}
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = async () => {};
 
-  };
+  const responseFacebook = async (response) => {};
 
-  const responseFacebook = async (response) => {
-  
-  };
-
-  useEffect(() => {
-    if (userId) {
-      router.push("/profile");
-    }
-  }, [userId]);
+  // useEffect(() => {
+  //   if (userId) {
+  //     router.back();
+  //   }
+  // }, [userId]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">

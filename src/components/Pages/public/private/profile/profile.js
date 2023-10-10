@@ -3,7 +3,7 @@ import ImageUpload from "@/components/global/fields/ImageUpload";
 import SelectField from "@/components/global/fields/SelectField";
 import { useAuthContext } from "@/context/authContext";
 import { useGlobalAppContext } from "@/context/context";
-import { get, getsingle, patch } from "@/lib/http";
+import { get, getsingle, patch } from "@/lib/network/http";
 import { countries } from "countries-list";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";

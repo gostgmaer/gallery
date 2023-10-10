@@ -1,4 +1,4 @@
-import ForgetPassword from "@/components/Pages/public/ForgetPassword";
+import ForgetPassword from "@/components/Pages/public/auth/ForgetPassword";
 
 const Index = () => {
   return (

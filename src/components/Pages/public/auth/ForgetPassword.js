@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { post } from "@/lib/http";
+import { post } from "@/lib/network/http";
 import { useAuthContext } from "@/context/authContext";
-import { useAxios } from "@/lib/interceptors";
+import { useAxios } from "@/lib/network/interceptors";
 
 const ForgetPassword = () => {
   const { handleLoginAuth, user, userId } = useAuthContext();

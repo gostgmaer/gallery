@@ -2,8 +2,8 @@
 // import axios from "axios";
 
 import axios from "axios";
-import instance from '../lib/interceptors'
-import { notifySuccess, notifyerror } from "./notify/notice";
+import instance from './interceptors'
+import { notifySuccess, notifyerror } from "../notify/notice";
 import { parseCookies } from "nookies";
 const baseURL = process.env.NEXT_PUBLIC_BASE_URL; // Replace with your Firebase URL
 

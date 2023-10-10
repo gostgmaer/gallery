@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useGlobalAppContext } from "./context";
 import jwt_decode from "jwt-decode";
 import { useRouter } from "next/navigation";
-import { post } from "@/lib/http";
+import { post } from "@/lib/network/http";
 
 export const AuthContext = React.createContext(null);
 
@@ -12,6 +12,7 @@ export const AuthContextProvider = ({ children }) => {
   const { loader, loaderFalse, loaderTrue } = useGlobalAppContext();
   const [user, setUser] = React.useState(undefined);
   const [userId, setUserId] = useState(null);
+  const [previous, setPrevious] = useState('');
 
   const router = useRouter();
 
@@ -28,7 +29,9 @@ export const AuthContextProvider = ({ children }) => {
       });
       setUser(res);
       setUserId({ ...res.user, user_id: res.user._id });
-      router.push("/profile");
+    
+      router.push(`/${previous}`);
+    
       return res;
     } catch (error) {}
   };
@@ -82,7 +85,7 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, handleLoginAuth, Logout, userId }}>
+    <AuthContext.Provider value={{ user, handleLoginAuth, Logout, userId,setPrevious }}>
       {children}
     </AuthContext.Provider>
   );

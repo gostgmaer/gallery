@@ -1,6 +1,6 @@
 "use client";
 
-import { get, getsingle, patch } from "@/lib/http";
+import { get, getsingle, patch } from "@/lib/network/http";
 import React, { useContext, useState, useEffect } from "react";
 const AppContext = React.createContext(null);
 
