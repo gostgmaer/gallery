@@ -43,8 +43,8 @@ const AppProvider = ({ children }) => {
 
   const SearchImages = async () => {
     let imagesParam = {
-      page: indexPage?indexPage:1,
-      per_page: perpage?perpage:20,
+      page: indexPage,
+      per_page: perpage,
       query: keyword?keyword:'nature',
       order_by: order,
       color: color,
@@ -55,6 +55,7 @@ const AppProvider = ({ children }) => {
     let query = deletekeys(imagesParam);
     const res = await InvokeAPI(`search/photos`, "get", "", "", imagesParam);
     setImages(res);
+    return res
     
   };
 
@@ -71,7 +72,7 @@ const AppProvider = ({ children }) => {
 
   useEffect(() => {
     SearchImages();
-  }, [indexPage, keyword, orientation, color, order, perpage]);
+  }, [ keyword, orientation, color, order]);
 
 
   const openimage = () => {
@@ -131,6 +132,7 @@ const AppProvider = ({ children }) => {
         image,
         setImage,
         indexPage,
+        SearchImages,
         keyword,
         setIndexPage,
         imageIndex,
