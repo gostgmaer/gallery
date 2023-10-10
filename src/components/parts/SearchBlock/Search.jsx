@@ -1,63 +1,68 @@
-// components/AutocompleteSearch.js
 "use client";
+// components/ComboBox.js
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-const AutocompleteSearch = ({ fetchData }) => {
-  const [query, setQuery] = useState("");
+const ComboBox = ({ classes }) => {
+  const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [showResults, setShowResults] = useState(false); // Track whether to show results or not
+  const fruits = [
+    "Apple",
+    "Banana",
+    "Cherry",
+    "Date",
+    "Grape",
+    "Lemon",
+    "Mango",
+    "Orange",
+    "Peach",
+    "Pear",
+  ];
 
   const handleInputChange = (e) => {
-    const inputValue = e.target.value.toLowerCase();
-    setQuery(inputValue);
+    const term = e.target.value;
+    setSearchTerm(term);
 
-    // Filter the results based on the user's input
-    const filteredResults = fetchData().filter((item) =>
-      item.toLowerCase().includes(inputValue)
+    const filteredResults = fruits.filter((fruit) =>
+      fruit.toLowerCase().includes(term.toLowerCase())
     );
 
     setResults(filteredResults);
+    setShowResults(true); // Show results when there is input
   };
 
-  useEffect(() => {
-    if (selectedItem) {
-      // Make an API call with the selectedItem
-      // Replace this with your actual API call logic
-      console.log(`API call with selected item: ${selectedItem}`);
-
-      // Hide the autocomplete results
-      setResults([]);
-    }
-  }, [selectedItem]);
+  const handleResultClick = (selectedFruit) => {
+    setSearchTerm(selectedFruit);
+    setShowResults(false); // Hide results after selection
+  };
 
   return (
-    <div className="relative">
-      <input
-        type="text"
-        placeholder="Search..."
-        className="border rounded-lg py-2 pl-10 pr-4 w-64 focus:outline-none focus:border-blue-400"
-        onChange={handleInputChange}
-        value={query}
-      />
-      {results.length > 0 && (
-        <div className="absolute top-10 left-0 w-64 border border-gray-300 bg-white shadow-lg rounded-lg">
-          {results.map((result, index) => (
-            <div
-              key={index}
-              className="p-2 cursor-pointer hover:bg-blue-100 border-b border-gray-200"
-              onClick={() => {
-                setSelectedItem(result);
-                setQuery(result); // Update the input field with the selected item
-              }}
+    <div className={`relative ${classes}`}>
+      <div className="relative w-full max-w-lg transform transition-all opacity-100 scale-100">
+        <div className=" relative mx-auto flex items-center">
+          <form
+            typeof="post"
+            className="w-full max-w-screen-md mx-auto  bg-white h-10 rounded-lg overflow-hidden shadow-md flex"
+          >
+            <input
+              type="text"
+              placeholder="Search for image/video..."
+              value={searchTerm}
+              required
+              onChange={handleInputChange}
+              className="flex-grow py-2 px-4 focus:outline-none text-black"
+            />
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600  font-semibold py-2 text-white px-6 rounded-r-lg transition duration-300 ease-in-out"
             >
-              {result}
-            </div>
-          ))}
+              Search
+            </button>
+          </form>
         </div>
-      )}
+      </div>
     </div>
   );
 };
-
-export default AutocompleteSearch;
+export default ComboBox;

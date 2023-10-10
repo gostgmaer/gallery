@@ -14,7 +14,7 @@ function Header() {
   };
 
   return (
-    <header className="bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300 text-white py-3">
+    <header className="bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300 text-white py-3 z-10">
       <div className="container mx-auto flex justify-between items-center">
         <Link href={"/"} className="text-3xl font-semibold">
         Pexels
