@@ -25,6 +25,7 @@ const Page = () => {
   useEffect(() => {
     router.replace("/search");
   }, []);
+  
   return (
     <div>
       <button

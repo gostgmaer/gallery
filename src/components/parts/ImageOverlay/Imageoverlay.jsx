@@ -13,14 +13,12 @@ import {
   MdShare,
   MdShield,
 } from "react-icons/md";
-import { Bars } from "react-loader-spinner";
-import { Link } from "react-router-dom";
-import { Data } from "../../Assets/StaticData/Data";
-import { useGlobalContext } from "../../Utils/Context/Context";
+
 import Filter from "../Filter";
 import Images from "../ImageCard/Images";
 import ItemsMenu from "../MenuItem";
 import "./Imageoverlay.scss";
+import { useGlobalAppContext } from "@/context/context";
 
 const Imageoverlay = () => {
   // let ImageData = image;
@@ -33,17 +31,19 @@ const Imageoverlay = () => {
     setloading,
     setLightboxData,
     openimage,
-    reqParam,DownloadImage,
+    reqParam,
+    DownloadImage,
     setImageId,
     realted,
-    setRealted, setkeyword,
+    setRealted,
+    setkeyword,
     image,
     setImage,
     closeimage,
     lightboxData,
     expand,
     setExpand,
-  } = useGlobalContext();
+  } = useGlobalAppContext();
   const [openTab, setopenTab] = useState(false);
 
   const handleClick = (e) => {
@@ -72,10 +72,13 @@ const Imageoverlay = () => {
           <div className="download">
             <button
               onClick={() => {
-                DownloadImage(`${image?.links?.download}`,`${image?.alt_description}.jpg`)
+                DownloadImage(
+                  `${image?.links?.download}`,
+                  `${image?.alt_description}.jpg`
+                );
               }}
-              className="btn">
-
+              className="btn"
+            >
               Download Image
             </button>
           </div>
@@ -96,7 +99,8 @@ const Imageoverlay = () => {
             <MdFullscreen onClick={() => setExpand(!expand)}></MdFullscreen>
           ) : (
             <MdCloseFullscreen
-              onClick={() => setExpand(!expand)}></MdCloseFullscreen>
+              onClick={() => setExpand(!expand)}
+            ></MdCloseFullscreen>
           )}
         </div>
       </div>
@@ -177,7 +181,7 @@ const Imageoverlay = () => {
       </div>
     );
   };
-  const RelatedCollection = () => { };
+  const RelatedCollection = () => {};
   const RelatedTags = () => {
     return (
       <div className="related">
@@ -187,14 +191,15 @@ const Imageoverlay = () => {
             <li
               className={`tag-item btn`}
               key={index}
-              onClick={(e) => setkeyword(item.title)}>
+              onClick={(e) => setkeyword(item.title)}
+            >
               {item.title}
             </li>
           ))}
         </ul>
       </div>
-    )
-  }
+    );
+  };
   const Arrow = () => {
     return (
       <div className="arrow">
@@ -203,7 +208,8 @@ const Imageoverlay = () => {
             imageIndex === 0
               ? setimageIndex(lightboxData.newImage.length - 1)
               : setimageIndex(imageIndex - 1)
-          }>
+          }
+        >
           <MdOutlineArrowLeft></MdOutlineArrowLeft>
         </span>
 
@@ -212,7 +218,8 @@ const Imageoverlay = () => {
             imageIndex === lightboxData.newImage.length - 1
               ? setimageIndex(0)
               : setimageIndex(imageIndex + 1)
-          }>
+          }
+        >
           <MdArrowRight></MdArrowRight>
         </span>
       </div>
@@ -224,10 +231,10 @@ const Imageoverlay = () => {
       <div className="overlay-image-container">
         <div className="overlaywrapper">
           <div className="overlayHeading">
-            <Link to={"/"}>
+            <button>
               {" "}
               <MdClose className="dismiss" onClick={closeimage}></MdClose>
-            </Link>
+            </button>
           </div>
           <div className="overlayContent">
             <div className="content-header">

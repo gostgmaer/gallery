@@ -17,38 +17,36 @@ const Home = () => {
     SearchImages,
   } = useGlobalAppContext();
 
-  const [mydata, setMydata] = useState([]);
+  const [items, setItems] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
 
-  const fetchMoreData = async () => {
-    const data = await SearchImages();
-    
-    var mynewData = [...data.results, ...mydata]
-    console.log(mynewData);
-    setMydata([...data.results, ...mydata]);
-    setIndexPage(indexPage + 1);
-    console.log(mydata);
+  const fetchData = async () => {
+    var newItems = [];
+    const response = await SearchImages();
+    newItems = response.results;
+    if (response.results) {
+      setItems([...items, ...newItems]);
+    }
   };
 
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.documentElement.offsetHeight
-    ) {
-      fetchMoreData();
+  const onScroll = () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+
+    if (scrollTop + clientHeight >= scrollHeight) {
+      setIndexPage(indexPage + 1);
     }
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [items]);
 
   useEffect(() => {
-    fetchMoreData();
-  }, []);
+    fetchData();
+  }, [indexPage]);
 
   return (
     <div className="Home">
@@ -66,7 +64,7 @@ const Home = () => {
       </div>
       <div className="image-listing">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {mydata.map((item) => {
+          {items.map((item) => {
             return <Images key={item.id} item={item}></Images>;
           })}
         </div>
