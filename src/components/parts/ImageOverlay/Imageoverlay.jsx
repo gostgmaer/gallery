@@ -34,8 +34,8 @@ const Imageoverlay = () => {
     reqParam,
     DownloadImage,
     setImageId,
-    realted,
-    setRealted,
+    related,
+    setRelated,
     setkeyword,
     image,
     setImage,
@@ -175,7 +175,7 @@ const Imageoverlay = () => {
   const RelatedImages = () => {
     return (
       <div className="relatedImageWrapper">
-        {realted?.results.map((item) => {
+        {related?.results.map((item) => {
           return <Images key={item.id} item={item}></Images>;
         })}
       </div>

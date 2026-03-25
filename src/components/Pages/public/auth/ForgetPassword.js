@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { post } from "@/lib/network/http";
 import { useAuthContext } from "@/context/authContext";
-import { useAxios } from "@/lib/network/interceptors";
+import { ENDPOINTS } from "@/config/endpoints";
+import { useGlobalLoading } from "@/lib/network/loading";
+import Spinner from "@/components/global/loader/Spinner";
 
 const ForgetPassword = () => {
   const { handleLoginAuth, user, userId } = useAuthContext();
-  const [axios, spinner] = useAxios();
+  const loading = useGlobalLoading();
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -26,8 +28,7 @@ const ForgetPassword = () => {
     };
 
     try {
-      const res = await post("/user/auth/forget-password", body);
-      console.log(res);
+      const res = await post(ENDPOINTS.AUTH.FORGET_PASSWORD, body);
       return res;
     } catch (error) {}
   };
@@ -81,7 +82,7 @@ const ForgetPassword = () => {
           </Link>
         </p>
       </div>
-      {spinner}
+      {loading && <Spinner />}
     </div>
   );
 };

@@ -5,11 +5,13 @@ import { post } from "@/lib/network/http";
 import { notifyerror } from "@/lib/notify/notice";
 import Link from "next/link";
 import { useAuthContext } from "@/context/authContext";
-import { useAxios } from "@/lib/network/interceptors";
+import { ENDPOINTS } from "@/config/endpoints";
+import { useGlobalLoading } from "@/lib/network/loading";
+import Spinner from "@/components/global/loader/Spinner";
 const ConfirmAccount = () => {
   const { handleLoginAuth, user, userId } = useAuthContext();
   const router = useRouter();
-  const [axios, spinner] = useAxios();
+  const loading = useGlobalLoading();
   const [userData, setUserData] = useState(undefined);
   const [error, setError] = useState(undefined);
   const param = useSearchParams();
@@ -21,11 +23,10 @@ const ConfirmAccount = () => {
     } else {
       try {
         const confirm = await post(
-          `/user/auth/confirm-account/${param.getAll("token")[0]}`
+          `${ENDPOINTS.AUTH.CONFIRM_ACCOUNT_BASE}/${param.getAll("token")[0]}`
         );
         setUserData(confirm);
       } catch (error) {
-        console.log(error.message);
         setError(error.message);
       }
     }
@@ -78,7 +79,7 @@ const ConfirmAccount = () => {
           )}
         </div>
       </div>
-      {spinner}
+      {loading && <Spinner />}
     </div>
   );
 };

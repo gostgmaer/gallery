@@ -2,7 +2,7 @@ import { useGlobalAppContext } from "@/context/context";
 import { useState } from "react";
 
 const Modal = ({ children }) => {
-  const { isModalOpen, closeModal, lo } = useGlobalAppContext();
+  const { isModalOpen, closeModal } = useGlobalAppContext();
 
   if (!isModalOpen) return null;
 

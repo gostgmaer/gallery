@@ -2,6 +2,7 @@
 import { get, getsingle, patch } from "@/lib/network/http";
 import InvokeAPI from "@/lib/network/invokeapi/invokeapi";
 import { deletekeys } from "@/utils/custom/functions";
+import { ENDPOINTS } from "@/config/endpoints";
 import React, { useContext, useState, useEffect } from "react";
 const AppContext = React.createContext(null);
 
@@ -19,7 +20,7 @@ const AppProvider = ({ children }) => {
   const [image, setImage] = useState(null);
   const [color, setColor] = useState(null);
   const [perpage, setPerpage] = useState(12);
-  const [realted, setRealted] = useState(null);
+  const [related, setRelated] = useState(null);
   const [expand, setExpand] = useState(true);
   const [order, setOrder] = useState(null);
   const [error, setError] = useState(null);
@@ -53,7 +54,7 @@ const AppProvider = ({ children }) => {
       collections: "",
     };
     let query = deletekeys(imagesParam);
-    const res = await InvokeAPI(`search/photos`, "get", "", "", imagesParam);
+    const res = await InvokeAPI(ENDPOINTS.IMAGES.SEARCH_PHOTOS, "get", "", "", imagesParam);
     setImages(res);
     return res
     
@@ -66,7 +67,7 @@ const AppProvider = ({ children }) => {
       order_by: "",
     };
     let query = deletekeys({ ...imagesParam })
-    const res = await InvokeAPI(`photos`, "get", "", "", query);
+    const res = await InvokeAPI(ENDPOINTS.IMAGES.PHOTOS, "get", "", "", query);
     setImages(res);
   };
 
@@ -126,8 +127,8 @@ const AppProvider = ({ children }) => {
         onclickOpenImageLightBox,
         openimage,
         closeimage,
-        realted,
-        setRealted,
+        related,
+        setRelated,
         setPerpage,
         image,
         setImage,

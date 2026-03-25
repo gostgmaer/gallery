@@ -68,11 +68,6 @@ Showing <span>0-20 </span> of
       </div>
     </div>
   );
-  // eslint-disable-next-line no-undef
-  // useEffect(() => {
-  //     console.log(indexPage);
-  //     console.log(keyword);
-  // }, [indexPage, keyword]);
   return (
     <div className="filter">
       <div className="filter-element">

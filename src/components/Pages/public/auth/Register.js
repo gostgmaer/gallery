@@ -5,10 +5,12 @@ import Link from "next/link";
 import PasswordField from "@/components/global/fields/PasswordField";
 import { post } from "@/lib/network/http";
 import { useAuthContext } from "@/context/authContext";
-import { useAxios } from "@/lib/network/interceptors";
+import { ENDPOINTS } from "@/config/endpoints";
+import { useGlobalLoading } from "@/lib/network/loading";
+import Spinner from "@/components/global/loader/Spinner";
 const Signup = () => {
   const { handleLoginAuth, user, userId } = useAuthContext();
-  const [axios, spinner] = useAxios();
+  const loading = useGlobalLoading();
   const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: "",
@@ -28,7 +30,6 @@ const Signup = () => {
 
   const handleRegistration = async (e) => {
     e.preventDefault();
-    console.log(formData);
 
     const body = {
       firstName: formData.firstName,
@@ -39,20 +40,19 @@ const Signup = () => {
     };
 
     try {
-      const res = await post("/user/register", body);
+      const res = await post(ENDPOINTS.USER.REGISTER, body);
       if (res) {
         router.push("/auth/login");
       }
     } catch (error) {
       setError(error);
-      console.log(error);
     }
   };
 
   const handleGoogleLogin = async () => {};
 
   const responseFacebook = (response) => {
-    console.log(response);
+    // TODO: Implement Facebook login
   };
 
   useEffect(() => {
@@ -208,7 +208,7 @@ const Signup = () => {
           </Link>
         </p>
       </div>
-      {spinner}
+      {loading && <Spinner />}
     </div>
   );
 };

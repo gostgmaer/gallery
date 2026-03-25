@@ -1,37 +1,28 @@
-// utils/axios.js
-
-import Spinner from "@/components/global/loader/Spinner";
 import axios from "axios";
-import { useState } from "react";
+import { incrementLoading, decrementLoading } from "./loading";
 
 const instance = axios.create();
 
-export const useAxios = () => {
-  const [loading, setLoading] = useState(false);
+instance.interceptors.request.use(
+  function (config) {
+    incrementLoading();
+    return config;
+  },
+  function (error) {
+    decrementLoading();
+    return Promise.reject(error);
+  }
+);
 
-  instance.interceptors.request.use(
-    function (config) {
-      setLoading(true);
-      return config;
-    },
-    function (error) {
-      setLoading(false);
-      return Promise.reject(error);
-    }
-  );
-
-  instance.interceptors.response.use(
-    function (response) {
-      setLoading(false);
-      return response;
-    },
-    function (error) {
-      setLoading(false);
-      return Promise.reject(error);
-    }
-  );
-
-  return loading ? [instance, <Spinner key={1} />] : [instance, null];
-};
+instance.interceptors.response.use(
+  function (response) {
+    decrementLoading();
+    return response;
+  },
+  function (error) {
+    decrementLoading();
+    return Promise.reject(error);
+  }
+);
 
 export default instance;

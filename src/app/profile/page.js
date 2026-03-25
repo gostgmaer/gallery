@@ -2,13 +2,14 @@
 "use client";
 import Personal from "@/components/Pages/public/private/profile/profile";
 import { useAuthContext } from "@/context/authContext";
-import { useAxios } from "@/lib/network/interceptors";
+import { useGlobalLoading } from "@/lib/network/loading";
+import Spinner from "@/components/global/loader/Spinner";
 
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 export default function Profile({ data }) {
-  const [axios, spinner] = useAxios();
+  const loading = useGlobalLoading();
   const { user, userId, setPrevious } = useAuthContext();
   // const { loader } = useGlobalAppContext();
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function Profile({ data }) {
   return (
     <div>
       <Personal />
-      {spinner}
+      {loading && <Spinner />}
     </div>
   );
 }

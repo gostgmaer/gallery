@@ -2,8 +2,8 @@
 import ImageUpload from "@/components/global/fields/ImageUpload";
 import SelectField from "@/components/global/fields/SelectField";
 import { useAuthContext } from "@/context/authContext";
-import { useGlobalAppContext } from "@/context/context";
 import { get, getsingle, patch } from "@/lib/network/http";
+import { ENDPOINTS } from "@/config/endpoints";
 import { countries } from "countries-list";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -11,21 +11,19 @@ import { MdClose } from "react-icons/md";
 
 const Personal = () => {
   const { user, userId } = useAuthContext();
-  const { loaderFalse, loaderTrue } = useGlobalAppContext();
   const [profileInfo, setProfileInfo] = useState(undefined);
   const [close, setClose] = useState(true);
+  const [error, setError] = useState(null);
 
   const getProfile = async () => {
-    loaderTrue();
     try {
       if (userId?.user_id) {
-        const res = await get(`/user/profile`, null, userId.user_id);
+        const res = await get(ENDPOINTS.USER.PROFILE, null, userId.user_id);
         setProfileInfo(res);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      setError(err);
     }
-    loaderFalse();
   };
 
   useEffect(() => {
@@ -65,7 +63,6 @@ export default Personal;
 
 const UserProfile = ({ data, setClose, setProfileInfo }) => {
   const { user, userId } = useAuthContext();
-  const { loader, loaderTrue, loaderFalse } = useGlobalAppContext();
   const [formData, setFormData] = useState({
     firstName: data?.firstName,
     lastName: data.lastName,
@@ -80,6 +77,7 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
     country: data?.address?.country,
   });
   const [imagePreview, setimagePreview] = useState(data?.profilePicture);
+  const [uploadError, setUploadError] = useState(null);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -90,7 +88,6 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
   };
 
   const UpdateProfile = async (e) => {
-    loaderTrue();
     e.preventDefault();
 
     const recordData = {
@@ -100,20 +97,20 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
     };
 
     try {
-      const res = await patch(`/user`, recordData, userId.user_id);
+      const res = await patch(ENDPOINTS.USER.UPDATE, recordData, userId.user_id);
 
       if (res) {
         setClose(true);
         const userInfoDaa = await getsingle(
-          `/user/profile`,
+          ENDPOINTS.USER.PROFILE,
           null,
           userId.user_id
         );
         setProfileInfo(userInfoDaa);
-      } else {
       }
-    } catch (error) {}
-    loaderFalse();
+    } catch (error) {
+      setUploadError(error);
+    }
   };
 
   var countryArray = [];

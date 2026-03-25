@@ -12,7 +12,6 @@ const baseURL = process.env.NEXT_PUBLIC_BASE_URL; // Replace with your Firebase 
 
 
 export const get = async (endpint, query, id) => {
- 
   const cookies = parseCookies();
   const token = cookies["accessToken"];
   const session = cookies["session"];
@@ -36,19 +35,13 @@ export const get = async (endpint, query, id) => {
   let error;
   try {
     response = await instance.request(option);
-
-    if (!endpint.includes("session")) {
-      notifySuccess(response.data.message, 2000);
-    }
+    // Silent GET requests - no notifications for read operations
   } catch (e) {
     error = e.response.data;
-    if (!endpint.includes("session")) {
-      notifyerror(e.response.data.message, 2000);
-    }
-
+    // Silent error for GET - let component handle if needed
     throw new Error(JSON.stringify(e.response.data));
   }
-  return response?.data ? response?.data : error; // or set initial value
+  return response?.data ? response?.data : error;
 };
 
 export const getsingle = async (endpint, query, id) => {
@@ -69,19 +62,13 @@ export const getsingle = async (endpint, query, id) => {
   let error;
   try {
     response = await instance.request(option);
-
-    if (!endpint.includes("session")) {
-      notifySuccess(response.data.message, 2000);
-    }
+    // Silent GET
   } catch (e) {
     error = e.response.data;
-    if (!endpint.includes("session")) {
-      notifyerror(e.response.data.message, 2000);
-    }
-
+    // Silent error
     throw new Error(JSON.stringify(e.response.data));
   }
-  return response?.data ? response?.data : error; // or set initial value
+  return response?.data ? response?.data : error;
 };
 
 export const getServerSingle = async (endpint, query, id) => {
@@ -102,19 +89,13 @@ export const getServerSingle = async (endpint, query, id) => {
   let error;
   try {
     response = await axios.request(option);
-
-    if (!endpint.includes("session")) {
-      notifySuccess(response.data.message, 2000);
-    }
+    // Silent GET
   } catch (e) {
     error = e.response.data;
-    if (!endpint.includes("session")) {
-      notifyerror(e.response.data.message, 2000);
-    }
-
+    // Silent error
     throw new Error(JSON.stringify(e.response.data));
   }
-  return response?.data ? response?.data : error; // or set initial value
+  return response?.data ? response?.data : error;
 };
 
 export const post = async (endpint, data) => {

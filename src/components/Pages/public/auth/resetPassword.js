@@ -5,10 +5,12 @@ import { post } from "@/lib/network/http";
 import { notifyerror } from "@/lib/notify/notice";
 import PasswordField from "@/components/global/fields/PasswordField";
 import { useAuthContext } from "@/context/authContext";
-import { useAxios } from "@/lib/network/interceptors";
+import { ENDPOINTS } from "@/config/endpoints";
+import { useGlobalLoading } from "@/lib/network/loading";
+import Spinner from "@/components/global/loader/Spinner";
 const ResetPassword = () => {
   const { handleLoginAuth, user, userId } = useAuthContext();
-  const [axios, spinner] = useAxios();
+  const loading = useGlobalLoading();
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -31,15 +33,13 @@ const ResetPassword = () => {
       if (password === confirmPassword) {
         try {
           const reset = await post(
-            `/user/auth/reset-password/${param.getAll("token")[0]}`,
+            `${ENDPOINTS.AUTH.RESET_PASSWORD_BASE}/${param.getAll("token")[0]}`,
             { password: password }
           );
           if (reset.status == "OK") {
             router.push("/auth/login");
           }
-        } catch (error) {
-          console.log(error);
-        }
+        } catch (error) {}
       } else {
         notifyerror("Passwords do not match", 2000);
       }
@@ -94,7 +94,7 @@ const ResetPassword = () => {
           </form>
         </div>
       </div>
-      {spinner}
+      {loading && <Spinner />}
     </div>
   );
 };

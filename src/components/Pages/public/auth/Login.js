@@ -4,12 +4,11 @@ import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/authContext";
 import Link from "next/link";
 import PasswordField from "@/components/global/fields/PasswordField";
-import { useGlobalAppContext } from "@/context/context";
-import { useAxios } from "@/lib/network/interceptors";
+import { useGlobalLoading } from "@/lib/network/loading";
+import Spinner from "@/components/global/loader/Spinner";
 const Login = () => {
   const { handleLoginAuth, user, userId } = useAuthContext();
-  const { loader, loaderFalse, loaderTrue } = useGlobalAppContext();
-  const [axios, spinner] = useAxios();
+  const loading = useGlobalLoading();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -130,7 +129,7 @@ const Login = () => {
           </Link>
         </p>
       </div>
-      {spinner}
+      {loading && <Spinner />}
     </div>
   );
 };

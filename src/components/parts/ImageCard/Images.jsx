@@ -10,12 +10,13 @@ import Modal from "@/components/global/modal/Modal";
 
 import Imageoverlay from "../ImageOverlay/Imageoverlay";
 import InvokeAPI from "@/lib/network/invokeapi/invokeapi";
+import { ENDPOINTS } from "@/config/endpoints";
 const Images = ({ item }) => {
   const {
     reqParam,
     setImageId,
     openModal,
-    setRealted,
+    setRelated,
 
     image,
     setImage,
@@ -52,20 +53,22 @@ const Images = ({ item }) => {
   const id = param.get("id");
 
   const getImage = async () => {
-    const res = await InvokeAPI(`photos/${id}`, "get", "", "", reqParam);
+    const endpoint = ENDPOINTS.IMAGES.SINGLE_PHOTO.replace(':id', id);
+    const res = await InvokeAPI(endpoint, "get", "", "", reqParam);
 
     setImage(res);
   };
   const getRelated = async () => {
+    const endpoint = ENDPOINTS.IMAGES.RELATED.replace(':id', id);
     const res = await InvokeAPI(
-      `photos/${id}/related`,
+      endpoint,
       "get",
       "",
       "",
       reqParam
     );
 
-    setRealted(res);
+    setRelated(res);
   };
 
   useEffect(() => {

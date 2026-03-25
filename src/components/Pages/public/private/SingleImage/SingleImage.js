@@ -2,6 +2,7 @@ import Modal from "@/components/global/modal/Modal";
 import Imageoverlay from "@/components/parts/ImageOverlay/Imageoverlay";
 import { useGlobalAppContext } from "@/context/context";
 import InvokeAPI from "@/lib/network/invokeapi/invokeapi";
+import { ENDPOINTS } from "@/config/endpoints";
 import { useParams, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -10,7 +11,7 @@ const SingleImage = () => {
     reqParam,
     setImageId,
     openModal,
-    setRealted,
+    setRelated,
     image,
     setImage,
   } = useGlobalAppContext();
@@ -20,20 +21,22 @@ const SingleImage = () => {
   const id = param.get("id");
 
   const getImage = async () => {
-    const res = await InvokeAPI(`photos/${id}`, "get", "", "", reqParam);
+    const endpoint = ENDPOINTS.IMAGES.SINGLE_PHOTO.replace(':id', id);
+    const res = await InvokeAPI(endpoint, "get", "", "", reqParam);
 
     setImage(res);
   };
   const getRelated = async () => {
+    const endpoint = ENDPOINTS.IMAGES.RELATED.replace(':id', id);
     const res = await InvokeAPI(
-      `photos/${id}/related`,
+      endpoint,
       "get",
       "",
       "",
       reqParam
     );
 
-    setRealted(res);
+    setRelated(res);
   };
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import { useGlobalAppContext } from "./context";
 import jwt_decode from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { post } from "@/lib/network/http";
+import { ENDPOINTS } from "@/config/endpoints";
 
 export const AuthContext = React.createContext(null);
 
@@ -17,7 +18,7 @@ export const AuthContextProvider = ({ children }) => {
 
   const handleLoginAuth = async (body) => {
     try {
-      const res = await post("/user/auth/login", body);
+      const res = await post(ENDPOINTS.AUTH.LOGIN, body);
       setCookie(null, "accessToken", res.token, {
         maxAge: 24 * 60 * 60, // 30 days
         path: "/", // The cookie is accessible from the entire site
@@ -40,7 +41,7 @@ export const AuthContextProvider = ({ children }) => {
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     }
     try {
-      const res = await post("/user/auth/signout");
+      const res = await post(ENDPOINTS.AUTH.SIGNOUT);
       if (res.statusCode == "200") {
         sessionStorage.removeItem("user");
         deleteCookie("accessToken");
@@ -62,7 +63,7 @@ export const AuthContextProvider = ({ children }) => {
         setUserId(decodedToken);
 
         if (decodedToken["user_id"]) {
-          const res = await post("/user/auth/verify/session");
+          const res = await post(ENDPOINTS.AUTH.VERIFY_SESSION);
           setUser(res);
         }
       }

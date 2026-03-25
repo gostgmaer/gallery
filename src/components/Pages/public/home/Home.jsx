@@ -1,5 +1,5 @@
 "use client";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef, useCallback } from "react";
 import Images from "@/components/parts/ImageCard/Images";
 import { useGlobalAppContext } from "@/context/context";
 import Filter from "@/components/parts/Filter";
@@ -19,30 +19,34 @@ const Home = () => {
 
   const [items, setItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
+  const lastScrollTime = useRef(0);
 
   const fetchData = async () => {
-    var newItems = [];
     const response = await SearchImages();
-    newItems = response.results;
-    if (response.results) {
-      setItems([...items, ...newItems]);
-    }
+    const newItems = response?.results || [];
+    setItems(prevItems => [...prevItems, ...newItems]);
   };
 
-  const onScroll = () => {
-    const scrollTop = document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight;
-
-    if (scrollTop + clientHeight >= scrollHeight) {
-      setIndexPage(indexPage + 1);
+  const onScroll = useCallback(() => {
+    const now = Date.now();
+    if (now - lastScrollTime.current < 300) {
+      return; // Throttle to max once every 300ms
     }
-  };
+    lastScrollTime.current = now;
+
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight || window.innerHeight;
+
+    if (scrollTop + clientHeight >= scrollHeight - 50) {
+      setIndexPage(prev => prev + 1);
+    }
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
-  }, [items]);
+  }, [onScroll]);
 
   useEffect(() => {
     fetchData();
