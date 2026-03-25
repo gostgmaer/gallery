@@ -1,19 +1,19 @@
-import Modal from "@/components/global/modal/Modal";
+import { Dialog, DialogContent } from "@/components/ui";
 import Imageoverlay from "@/components/parts/ImageOverlay/Imageoverlay";
 import { useGlobalAppContext } from "@/context/context";
 import InvokeAPI from "@/lib/network/invokeapi/invokeapi";
 import { ENDPOINTS } from "@/config/endpoints";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
 const SingleImage = () => {
   const {
     reqParam,
-    setImageId,
-    openModal,
     setRelated,
     image,
     setImage,
+    isModalOpen,
+    closeModal,
   } = useGlobalAppContext();
 
   const param = useSearchParams();
@@ -46,9 +46,11 @@ const SingleImage = () => {
 
   return (
     <div className="SingleImage">
-      <Modal>
-        <Imageoverlay />
-      </Modal>
+      <Dialog open={isModalOpen} onOpenChange={closeModal}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <Imageoverlay />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

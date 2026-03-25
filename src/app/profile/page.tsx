@@ -1,4 +1,3 @@
-// @ts-nocheck
 "use client";
 import Personal from "@/components/Pages/public/private/profile/profile";
 import { useAuthContext } from "@/context/authContext";
@@ -8,10 +7,9 @@ import Spinner from "@/components/global/loader/Spinner";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
-export default function Profile({ data }) {
+export default function Profile() {
   const loading = useGlobalLoading();
-  const { user, userId, setPrevious } = useAuthContext();
-  // const { loader } = useGlobalAppContext();
+  const { userId, setPrevious } = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -28,9 +26,3 @@ export default function Profile({ data }) {
     </div>
   );
 }
-
-// export async function getServerSideProps() {
-//   const res = await fetch('https://api.github.com/repos/vercel/next.js')
-//   const data = await res.json()
-//   return { props: { data } }
-// }

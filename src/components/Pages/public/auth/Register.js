@@ -1,216 +1,191 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import PasswordField from "@/components/global/fields/PasswordField";
-import { post } from "@/lib/network/http";
 import { useAuthContext } from "@/context/authContext";
-import { ENDPOINTS } from "@/config/endpoints";
-import { useGlobalLoading } from "@/lib/network/loading";
-import Spinner from "@/components/global/loader/Spinner";
-const Signup = () => {
-  const { handleLoginAuth, user, userId } = useAuthContext();
-  const loading = useGlobalLoading();
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
+import { registerSchema } from "@/lib/validations/auth";
+
+const Register = () => {
+  const { handleLoginAuth, userId } = useAuthContext();
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirm_password: "",
-    username: "",
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm({
+    resolver: zodResolver(registerSchema),
   });
-  const [error, setError] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    // setResume({ ...resume, [name]: value });
-  };
-
-  const handleRegistration = async (e) => {
-    e.preventDefault();
-
-    const body = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      password: formData.password,
-      username: formData.username,
-    };
-
-    try {
-      const res = await post(ENDPOINTS.USER.REGISTER, body);
-      if (res) {
-        router.push("/auth/login");
-      }
-    } catch (error) {
-      setError(error);
-    }
-  };
-
-  const handleGoogleLogin = async () => {};
-
-  const responseFacebook = (response) => {
-    // TODO: Implement Facebook login
-  };
 
   useEffect(() => {
     if (userId) {
       router.push("/profile");
     }
-  }, [userId]);
+  }, [userId, router]);
+
+  const onSubmit = async (data) => {
+    try {
+      const res = await handleLoginAuth(data);
+      if (res) {
+        router.push("/profile");
+      }
+    } catch (error) {
+      setError("root", {
+        type: "manual",
+        message: error.message || "Registration failed. Please try again.",
+      });
+    }
+  };
+
+  if (userId) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-100 text-black">
-        <h2 className="text-2xl font-semibold mb-4">Sign Up</h2>
-        <form onSubmit={handleRegistration} className="text-black">
-          <div className="mb-4 flex gap-5">
-            <div className=" w-full">
-              <label
-                htmlFor="firstName"
-                className="block text-gray-700 font-semibold"
-              >
-                First Name
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                placeholder="Kishor"
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="w-full">
-              <label
-                htmlFor="lastName"
-                className="block text-gray-700 font-semibold"
-              >
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                placeholder="Sarkar"
-                value={formData.lastName}
-                onChange={handleChange}
-                required
-              />
-            </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 px-4 py-8">
+      <div className="w-full max-w-2xl">
+        <div className="bg-card text-card-foreground rounded-xl shadow-lg border p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <Link href="/" className="inline-block">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
+                Gallery
+              </h1>
+            </Link>
+            <h2 className="text-2xl font-semibold mt-6 mb-2">Create account</h2>
+            <p className="text-muted-foreground text-sm">
+              Join our community of creators and find the perfect images
+            </p>
           </div>
-          <div className="mb-4 flex gap-5">
-            <div className="w-full">
-              <label
-                htmlFor="email"
-                className="block text-gray-700 font-semibold"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                placeholder="info@mail.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="w-full">
-              <label
-                htmlFor="username"
-                className="block text-gray-700 font-semibold"
-              >
-                User Name
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                placeholder="kishoruser"
-                value={formData.username}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-          <div className="mb-4  flex gap-5">
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-gray-700 font-semibold"
-              >
-                Password
-              </label>
-              <PasswordField
-                value={formData.password}
-                handleChange={handleChange}
-                placeholder={"Password123"}
-                name={"password"}
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="confirm_password"
-                className="block text-gray-700 font-semibold"
-              >
-                Confirm Password
-              </label>
-              <PasswordField
-                value={formData.confirm_password}
-                handleChange={handleChange}
-                placeholder={"Password123"}
-                name={"confirm_password"}
-              />
-            </div>
-          </div>
-          <div className="mb-4  mt-10">
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white font-semibold py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-            >
-              Sign Up
-            </button>
-          </div>
-        </form>
-        <div className="flex flex-col gap-2 mt-10">
-          <div className="ab kw">
-            <div className="ab lx ze awa awe awp text-center">
-              <span className="alo ark axv">Or continue with</span>
-            </div>
-          </div>
-          <div className="mb-4 flex gap-2">
-            <button
-              onClick={handleGoogleLogin}
-              className="w-full bg-red-600 text-white font-semibold py-2 rounded-md hover:bg-red-700 focus:outline-none focus:bg-red-700"
-            >
-              Google
-            </button>
-            <button className="w-full bg-blue-800 text-white font-semibold py-2 rounded-md hover:bg-blue-900 focus:outline-none focus:bg-blue-900">
-              {" "}
-              Facebook
-            </button>
-          </div>
-        </div>
 
-        <p className="text-gray-700">
-          Already have an account?{" "}
-          <Link href="/auth/login" className="text-blue-500 hover:underline">
-            Login here
-          </Link>
-        </p>
+          {/* Error Alert */}
+          {errors.root && (
+            <div className="mb-6">
+              <Alert variant="destructive">
+                <AlertDescription>{errors.root.message}</AlertDescription>
+              </Alert>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            {/* Name Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Input
+                  label="First Name"
+                  {...register("firstName")}
+                  error={errors.firstName?.message}
+                  placeholder="John"
+                />
+              </div>
+              <div>
+                <Input
+                  label="Last Name"
+                  {...register("lastName")}
+                  error={errors.lastName?.message}
+                  placeholder="Doe"
+                />
+              </div>
+            </div>
+
+            {/* Email */}
+            <div>
+              <Input
+                label="Email"
+                type="email"
+                {...register("email")}
+                error={errors.email?.message}
+                placeholder="you@example.com"
+                autoComplete="email"
+              />
+            </div>
+
+            {/* Username */}
+            <div>
+              <Input
+                label="Username"
+                {...register("username")}
+                error={errors.username?.message}
+                placeholder="johndoe"
+                autoComplete="username"
+              />
+            </div>
+
+            {/* Password Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Input
+                  label="Password"
+                  type="password"
+                  {...register("password")}
+                  error={errors.password?.message}
+                  placeholder="Create a password"
+                  autoComplete="new-password"
+                  helperText="At least 6 characters"
+                />
+              </div>
+              <div>
+                <Input
+                  label="Confirm Password"
+                  type="password"
+                  {...register("confirm_password")}
+                  error={errors.confirm_password?.message}
+                  placeholder="Confirm your password"
+                  autoComplete="new-password"
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <Button type="submit" className="w-full" size="lg" loading={isSubmitting}>
+              Create account
+            </Button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
+          {/* Social Login */}
+          <div className="grid grid-cols-2 gap-4">
+            <Button type="button" variant="outline" className="w-full">
+              <FaGoogle className="mr-2 h-4 w-4" />
+              Google
+            </Button>
+            <Button type="button" variant="outline" className="w-full">
+              <FaFacebook className="mr-2 h-4 w-4 text-blue-600" />
+              Facebook
+            </Button>
+          </div>
+
+          {/* Footer */}
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link href="/auth/login" className="text-primary hover:underline font-medium">
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
-      {loading && <Spinner />}
     </div>
   );
 };
 
-export default Signup;
+export default Register;

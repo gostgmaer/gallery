@@ -1,135 +1,151 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context/authContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import PasswordField from "@/components/global/fields/PasswordField";
-import { useGlobalLoading } from "@/lib/network/loading";
-import Spinner from "@/components/global/loader/Spinner";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
+import { loginSchema } from "@/lib/validations/auth";
+
 const Login = () => {
-  const { handleLoginAuth, user, userId } = useAuthContext();
-  const loading = useGlobalLoading();
+  const { handleLoginAuth, userId } = useAuthContext();
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+  } = useForm({
+    resolver: zodResolver(loginSchema),
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    // setResume({ ...resume, [name]: value });
-  };
+  useEffect(() => {
+    if (userId) {
+      router.push("/profile");
+    }
+  }, [userId, router]);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    const body = {
-      email: formData.email,
-      password: formData.password,
-    };
-
+  const onSubmit = async (data) => {
     try {
-      const res = await handleLoginAuth(body);
+      const res = await handleLoginAuth(data);
       if (res) {
+        router.push("/profile");
       }
-    } catch (error) {}
+    } catch (error) {
+      setError("root", {
+        type: "manual",
+        message: error.message || "Failed to login. Please try again.",
+      });
+    }
   };
 
-  const handleGoogleLogin = async () => {};
-
-  const responseFacebook = async (response) => {};
-
-  // useEffect(() => {
-  //   if (userId) {
-  //     router.back();
-  //   }
-  // }, [userId]);
+  if (userId) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96 text-black">
-        <h2 className="text-2xl font-semibold mb-4">Login</h2>
-        <form onSubmit={handleLogin} action="post">
-          <div className="mb-4 text-black">
-            <label
-              htmlFor="email"
-              className="block text-gray-700 font-semibold"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-card text-card-foreground rounded-xl shadow-lg border p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <Link href="/" className="inline-block">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-600 via-blue-600 to-cyan-500 bg-clip-text text-transparent">
+                Gallery
+              </h1>
+            </Link>
+            <h2 className="text-2xl font-semibold mt-6 mb-2">Welcome back</h2>
+            <p className="text-muted-foreground text-sm">
+              Enter your credentials to access your account
+            </p>
           </div>
-          <div className="mb-4 text-black">
-            <label
-              htmlFor="password"
-              className="block text-gray-700 font-semibold"
-            >
-              Password
-            </label>
-            <PasswordField
-              value={formData.password}
-              handleChange={handleChange}
-              placeholder={"Enter Your password"}
-              name={"password"}
-            />
+
+          {/* Error Alert */}
+          {errors.root && (
+            <div className="mb-6">
+              <Alert variant="destructive">
+                <AlertDescription>{errors.root.message}</AlertDescription>
+              </Alert>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div>
+              <Input
+                label="Email"
+                type="email"
+                placeholder="you@example.com"
+                {...register("email")}
+                error={errors.email?.message}
+                autoComplete="email"
+              />
+            </div>
+
+            <div>
+              <Input
+                label="Password"
+                type="password"
+                placeholder="Enter your password"
+                {...register("password")}
+                error={errors.password?.message}
+                autoComplete="current-password"
+              />
+            </div>
+
+            <div className="flex items-center justify-end">
+              <Link
+                href="/auth/forget-password"
+                className="text-sm text-primary hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+
+            <Button type="submit" className="w-full" size="lg" loading={isSubmitting}>
+              Sign in
+            </Button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
           </div>
-          <div className="mb-4 mt-10">
-            <button
-              type="submit"
-              disabled={loader}
-              className="w-full bg-blue-500 disabled:bg-blue-200  text-white font-semibold py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-            >
-              Login
-            </button>
-          </div>
-        </form>
-        <p className=" text-end">
-          {" "}
-          <Link
-            href={"/auth/forget-password"}
-            className="text-blue-500 hover:underline"
-          >
-            Forget Password?
-          </Link>
-        </p>
-        <div className="flex flex-col gap-2 mt-5">
-          <h3>Login with </h3>
-          <div className="mb-4 flex gap-2">
-            <button
-              onClick={handleGoogleLogin}
-              className="w-full bg-red-600 text-white font-semibold py-2 rounded-md hover:bg-red-700 focus:outline-none focus:bg-red-700"
-            >
+
+          {/* Social Login */}
+          <div className="grid grid-cols-2 gap-4">
+            <Button type="button" variant="outline" className="w-full">
+              <FaGoogle className="mr-2 h-4 w-4" />
               Google
-            </button>
-            <button
-              onClick={responseFacebook}
-              className="w-full bg-blue-800 text-white font-semibold py-2 rounded-md hover:bg-blue-900 focus:outline-none focus:bg-blue-900"
-            >
+            </Button>
+            <Button type="button" variant="outline" className="w-full">
+              <FaFacebook className="mr-2 h-4 w-4 text-blue-600" />
               Facebook
-            </button>
+            </Button>
           </div>
+
+          {/* Footer */}
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link href="/auth/register" className="text-primary hover:underline font-medium">
+              Sign up
+            </Link>
+          </p>
         </div>
-        <p className="text-gray-700">
-          Don t have an account?{" "}
-          <Link
-            href={"/auth/register"}
-            className="text-blue-500 hover:underline"
-          >
-            Sign up here
-          </Link>
-        </p>
       </div>
-      {loading && <Spinner />}
     </div>
   );
 };

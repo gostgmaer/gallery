@@ -1,150 +1,167 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { MdAdd, MdDownload, MdFavorite } from "react-icons/md";
+"use client";
 
-import "./Images.scss";
+"use client";
+
+import React, { useCallback, useEffect, useState } from "react";
+import { FaHeart, FaDownload, FaPlus } from "react-icons/fa";
+
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useGlobalAppContext } from "@/context/context";
-import Modal from "@/components/global/modal/Modal";
-
-import Imageoverlay from "../ImageOverlay/Imageoverlay";
+import { Card, CardContent, Avatar, Button } from "@/components/ui";
+import { motion, AnimatePresence } from "framer-motion";
 import InvokeAPI from "@/lib/network/invokeapi/invokeapi";
-import { ENDPOINTS } from "@/config/endpoints";
+
 const Images = ({ item }) => {
   const {
     reqParam,
     setImageId,
     openModal,
     setRelated,
-
     image,
     setImage,
   } = useGlobalAppContext();
-  const [showDetails, setShowDetails] = useState(true);
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  var pathname = usePathname();
+  const pathname = usePathname();
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const createQueryString = useCallback(
     (obj) => {
-      if (pathname === "/") {
-        pathname = "";
-      }
-
-  
       const params = new URLSearchParams(searchParams);
-
-      for (const key in obj) {
+      Object.keys(obj).forEach((key) => {
         if (obj.hasOwnProperty(key)) {
           params.set(key, obj[key]);
         }
-      }
-
-      openModal()
+      });
+      openModal();
       return params.toString();
     },
-    [searchParams]
+    [searchParams, openModal]
   );
 
   const param = useSearchParams();
-
   const id = param.get("id");
 
   const getImage = async () => {
-    const endpoint = ENDPOINTS.IMAGES.SINGLE_PHOTO.replace(':id', id);
-    const res = await InvokeAPI(endpoint, "get", "", "", reqParam);
-
+    if (!id) return;
+    const res = await InvokeAPI(`photos/${id}`, "get", "", "", reqParam);
     setImage(res);
   };
-  const getRelated = async () => {
-    const endpoint = ENDPOINTS.IMAGES.RELATED.replace(':id', id);
-    const res = await InvokeAPI(
-      endpoint,
-      "get",
-      "",
-      "",
-      reqParam
-    );
 
+  const getRelated = async () => {
+    if (!id) return;
+    const res = await InvokeAPI(`photos/${id}/related`, "get", "", "", reqParam);
     setRelated(res);
   };
 
   useEffect(() => {
-    getImage();
-    getRelated();
+    if (id) {
+      getImage();
+      getRelated();
+    }
   }, [id]);
 
-
   return (
-    <div
-      onMouseOver={() => setShowDetails(true)}
-      onMouseOut={() => setShowDetails(false)}
+    <Card
+      className="group relative overflow-hidden rounded-xl border-0 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer bg-card"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       onClick={() =>
         router.push(
-          pathname +
-            "?" +
-            createQueryString({
-              id: item.id,
-              slug: item.slug,
-              alt_description: item.alt_description,
-              auther: item.user.username,
-              auther_id: item.user.id,
-            })
+          pathname + "?" + createQueryString({
+            id: item.id,
+            slug: item.slug,
+            alt_description: item.alt_description,
+            author: item.user.username,
+            author_id: item.user.id,
+          })
         )
       }
-      className="relative group overflow-hidden rounded-lg shadow-md transition-transform transform-gpu hover:scale-105 hover:z-50"
     >
-      <div className="block w-full h-full">
-        <Image
-          src={item.urls.regular}
-          alt={item.alt_description}
-          width={320}
-          height={220}
-          className="object-cover h-auto"
-        />
-      </div>
-      {showDetails && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center flex-col justify-between transition-opacity opacity-0 group-hover:opacity-100  w-full py-5 px-10">
-          <div className="text-white flex justify-between items-end w-full ">
-            <div className="flex items-center justify-end space-x-2  w-full ">
-              <button className=" bg-gray-50 text-gray-600 px-1 py-1 rounded-sm">
-                <MdFavorite className=" w-4 h-4" />
-              </button>
-              <button className="bg-gray-50 text-gray-600 px-1 py-1 rounded-sm">
-                <MdAdd className=" w-4 h-4" />
-              </button>
-            </div>
-          </div>
-          <div className="text-white flex justify-between items-end  w-full ">
-            <div className="flex items-center space-x-2">
-              <Image
-                src={item?.user?.profile_image.large}
-                alt={item.user.name}
-                width={50}
-                height={50}
-                className="w-8 h-8 rounded-full"
-              />
-              <span className="font-semibold text-sm">{item?.user.name}</span>
-            </div>
-            <div className="mt-2">
-              <button
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-300 ease-in-out"
-                // onClick={() =>
-                //   downloadFile(`${item?.links?.download}`, `${item?.id}.jpg`)
-                // }
+      <CardContent className="p-0">
+        <div className="relative aspect-square overflow-hidden bg-muted">
+          <Image
+            src={item.urls.regular}
+            alt={item.alt_description || "Stock photo"}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className={`object-cover transition-transform duration-500 group-hover:scale-105 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            }`}
+            onLoadingComplete={() => setImageLoaded(true)}
+          />
+          {/* Skeleton while loading */}
+          {!imageLoaded && (
+            <div className="absolute inset-0 shimmer" />
+          )}
+
+          {/* Overlay */}
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-between p-4"
               >
-                <MdDownload />
-              </button>
-            </div>
-          </div>
+                {/* Top Actions */}
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
+                    aria-label="Like photo"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaHeart className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
+                    aria-label="Add to collection"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <FaPlus className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Bottom Info */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Avatar
+                      src={item.user.profile_image?.large}
+                      alt={`${item.user.name}'s profile`}
+                      size="sm"
+                      fallback={item.user.name?.charAt(0)}
+                    />
+                    <span className="text-white text-sm font-medium truncate max-w-[120px]">
+                      {item.user.name}
+                    </span>
+                  </div>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="bg-white/20 hover:bg-white/30 text-white border-0 backdrop-blur-sm"
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label="Download photo"
+                  >
+                    <FaDownload className="h-4 w-4 mr-2" />
+                    <span className="hidden sm:inline">Download</span>
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      )}
-      <Modal>
-        <Imageoverlay />
-      </Modal>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 

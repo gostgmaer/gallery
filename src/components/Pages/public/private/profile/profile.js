@@ -1,13 +1,18 @@
 "use client";
 import ImageUpload from "@/components/global/fields/ImageUpload";
-import SelectField from "@/components/global/fields/SelectField";
+import { Select } from "@/components/ui";
 import { useAuthContext } from "@/context/authContext";
 import { get, getsingle, patch } from "@/lib/network/http";
 import { ENDPOINTS } from "@/config/endpoints";
 import { countries } from "countries-list";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { MdClose } from "react-icons/md";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { Avatar } from "@/components/ui/Avatar";
 
 const Personal = () => {
   const { user, userId } = useAuthContext();
@@ -31,24 +36,29 @@ const Personal = () => {
   }, []);
 
   return (
-    <div className="container mx-auto py-8 text-black">
-      <div className=" flex justify-between items-center">
-        <h1 className="text-3xl font-semibold mb-4">My Profile</h1>
+    <div className="container mx-auto py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-semibold text-foreground">My Profile</h1>
         {profileInfo?.result?.profilePicture && (
-          <Image
-            width={100}
-            height={100}
-            property="false"
-            src={profileInfo.result.profilePicture}
-            style={{ borderRadius: "50%", height: "100px" }}
-            alt=""
-          />
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground">
+              {profileInfo.result.username}
+            </span>
+            <Avatar
+              src={profileInfo.result.profilePicture}
+              alt={`${profileInfo.result.username}'s profile`}
+              size="lg"
+              fallback={profileInfo.result.username?.charAt(0)}
+            />
+          </div>
         )}
       </div>
+
       {profileInfo && (
         <UserprofileDetails userData={profileInfo.result} setClose={setClose} />
       )}
-      {!close && (
+
+      {!close && profileInfo?.result && (
         <UserProfile
           data={profileInfo.result}
           setClose={setClose}
@@ -64,27 +74,30 @@ export default Personal;
 const UserProfile = ({ data, setClose, setProfileInfo }) => {
   const { user, userId } = useAuthContext();
   const [formData, setFormData] = useState({
-    firstName: data?.firstName,
-    lastName: data.lastName,
-    profilePicture: data?.profilePicture,
-    contactNumber: data?.contactNumber,
+    firstName: data?.firstName || "",
+    lastName: data?.lastName || "",
+    profilePicture: data?.profilePicture || "",
+    contactNumber: data?.contactNumber || "",
   });
   const [address, setAddress] = useState({
-    street: data?.address?.street,
-    city: data?.address?.city,
-    state: data?.address?.state,
-    postalCode: data?.address?.postalCode,
-    country: data?.address?.country,
+    street: data?.address?.street || "",
+    city: data?.address?.city || "",
+    state: data?.address?.state || "",
+    postalCode: data?.address?.postalCode || "",
+    country: data?.address?.country || "",
   });
-  const [imagePreview, setimagePreview] = useState(data?.profilePicture);
+  const [imagePreview, setImagePreview] = useState(data?.profilePicture || "");
   const [uploadError, setUploadError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleChangeAddress = (e) => {
     const { name, value } = e.target;
-    setAddress({ ...address, [name]: value });
+    setAddress((prev) => ({ ...prev, [name]: value }));
   };
 
   const UpdateProfile = async (e) => {
@@ -97,19 +110,22 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
     };
 
     try {
+      setIsSubmitting(true);
       const res = await patch(ENDPOINTS.USER.UPDATE, recordData, userId.user_id);
 
       if (res) {
         setClose(true);
-        const userInfoDaa = await getsingle(
+        const userInfoData = await getsingle(
           ENDPOINTS.USER.PROFILE,
           null,
           userId.user_id
         );
-        setProfileInfo(userInfoDaa);
+        setProfileInfo(userInfoData);
       }
     } catch (error) {
       setUploadError(error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -126,170 +142,127 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
   });
 
   return (
-    <form className="bg-gray-50 p-4 rounded-lg shadow-md">
-      <div className=" flex justify-between items-center">
-        {" "}
-        <h2 className="text-2xl font-semibold mb-4">Basic Info</h2>{" "}
-        <button className="text-red-500 hover:text-red-700 cursor-pointer">
-          <MdClose size={24} onClick={() => setClose(true)} />
-        </button>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label
-            htmlFor="firstName"
-            className="block text-gray-600 font-semibold mb-2"
-          >
-            First Name:
-          </label>
-          <input
-            type="text"
-            name="firstName"
-            id="firstName"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
-            value={formData.firstName}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="lastName"
-            className="block text-gray-600 font-semibold mb-2"
-          >
-            Last Name:
-          </label>
-          <input
-            type="text"
-            name="lastName"
-            id="lastName"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
-            value={formData.lastName}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="contactNumber"
-            className="block text-gray-600 font-semibold mb-2"
-          >
-            Phone Number:
-          </label>
-          <input
-            type="text"
-            name="contactNumber"
-            id="contactNumber"
-            className="w-full  read-only:bg-slate-100 px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
-            value={formData.contactNumber}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div>
-          <ImageUpload
-            imagePreview={imagePreview}
-            setImagePreview={setimagePreview}
-          />
-        </div>
-
-        <div className="col-span-2 mt-10">
-          <h2 className="block text-gray-600 font-semibold mb-2 text-2xl">
-            Address:
-          </h2>
-        </div>
-
-        <div>
-          <label
-            htmlFor="street"
-            className="block text-gray-600 font-semibold mb-2"
-          >
-            Street:
-          </label>
-          <input
-            type="text"
-            name="street"
-            id="street"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
-            value={address.street}
-            onChange={handleChangeAddress}
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="city"
-            className="block text-gray-600 font-semibold mb-2"
-          >
-            City:
-          </label>
-          <input
-            type="text"
-            name="city"
-            id="city"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
-            value={address.city}
-            onChange={handleChangeAddress}
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="state"
-            className="block text-gray-600 font-semibold mb-2"
-          >
-            State:
-          </label>
-          <input
-            type="text"
-            name="state"
-            id="state"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
-            value={address.state}
-            onChange={handleChangeAddress}
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="postalCode"
-            className="block text-gray-600 font-semibold mb-2"
-          >
-            Postal Code:
-          </label>
-          <input
-            type="text"
-            name="postalCode"
-            id="postalCode"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
-            value={address.postalCode}
-            onChange={handleChangeAddress}
-          />
-        </div>
-
-        {
-          <SelectField
-            options={countryArray}
-            value={address.country}
-            onChange={handleChangeAddress}
-            id={"country"}
-            label={"Country"}
-            placeholder={undefined}
-          />
-        }
-      </div>
-      <div className="col-span-1 mt-4 flex justify-end">
-        <button
-          type="button"
-          onClick={UpdateProfile}
-          // disabled={loader}
-          className="bg-blue-500 text-white py-2 disabled:bg-blue-200 disabled:pointer-events-none px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
+    <Card className="max-w-4xl mx-auto">
+      <CardHeader className="flex flex-row items-center justify-between pb-4">
+        <CardTitle className="text-2xl font-semibold">Basic Info</CardTitle>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setClose(true)}
+          aria-label="Close"
         >
-          Save Details
-        </button>
-      </div>
-    </form>
+          <X className="h-5 w-5" />
+        </Button>
+      </CardHeader>
+
+      <CardContent>
+        {uploadError && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription>
+              {uploadError?.message || "Failed to update profile. Please try again."}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <form onSubmit={UpdateProfile} className="space-y-6">
+          {/* Name Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Input
+                label="First Name"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <Input
+                label="Last Name"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Contact */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Input
+                label="Phone Number"
+                name="contactNumber"
+                value={formData.contactNumber}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Profile Picture</label>
+              <ImageUpload
+                imagePreview={imagePreview}
+                setImagePreview={setImagePreview}
+              />
+            </div>
+          </div>
+
+          {/* Address Section */}
+          <div className="pt-4 border-t">
+            <h3 className="text-lg font-semibold mb-4">Address</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <Input
+                  label="Street"
+                  name="street"
+                  value={address.street}
+                  onChange={handleChangeAddress}
+                />
+              </div>
+              <div>
+                <Input
+                  label="City"
+                  name="city"
+                  value={address.city}
+                  onChange={handleChangeAddress}
+                />
+              </div>
+              <div>
+                <Input
+                  label="State"
+                  name="state"
+                  value={address.state}
+                  onChange={handleChangeAddress}
+                />
+              </div>
+              <div>
+                <Input
+                  label="Postal Code"
+                  name="postalCode"
+                  value={address.postalCode}
+                  onChange={handleChangeAddress}
+                />
+              </div>
+              <div>
+                <Select
+                  label="Country"
+                  options={countryArray}
+                  value={address.country}
+                  onChange={(value) => setAddress((prev) => ({ ...prev, country: value }))}
+                  placeholder="Select a country"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Submit */}
+          <div className="flex justify-end pt-4">
+            <Button type="submit" size="lg" loading={isSubmitting}>
+              Save Changes
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
