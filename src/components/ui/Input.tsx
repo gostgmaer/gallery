@@ -11,6 +11,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, helperText, id, ...props }, ref) => {
     const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const errorId = error ? `${inputId}-error` : undefined;
+    const helperId = helperText && !error ? `${inputId}-helper` : undefined;
 
     return (
       <div className="w-full">
@@ -24,6 +26,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         <input
           id={inputId}
+          aria-invalid={!!error}
+          aria-describedby={errorId || helperId}
           className={`
             flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm
             ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium
@@ -37,10 +41,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <p className="mt-2 text-sm text-destructive">{error}</p>
+          <p id={errorId} className="mt-2 text-sm text-destructive" role="alert">
+            {error}
+          </p>
         )}
         {helperText && !error && (
-          <p className="mt-2 text-sm text-muted-foreground">{helperText}</p>
+          <p id={helperId} className="mt-2 text-sm text-muted-foreground">
+            {helperText}
+          </p>
         )}
       </div>
     );

@@ -1,19 +1,31 @@
 "use client";
 
 import ImageUpload from "@/components/global/fields/ImageUpload";
-import { Select } from "@/components/ui";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui";
 import { useAuthContext } from "@/context/authContext";
 import { get, patch } from "@/lib/network/http";
 import { ENDPOINTS } from "@/config/endpoints";
 import { countries } from "countries-list";
 import React, { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Avatar } from "@/components/ui/Avatar";
 import { Separator } from "@/components/ui/Separator";
+import { profileSchema } from "@/lib/validations/profile";
+import { z } from "zod";
 
 const Personal = () => {
   const { user, userId } = useAuthContext();
@@ -193,49 +205,55 @@ const ProfileView = ({ userData, onEdit }) => {
 
 const UserProfile = ({ data, setClose, setProfileInfo }) => {
   const { userId } = useAuthContext();
-  const [formData, setFormData] = useState({
-    firstName: data?.firstName || "",
-    lastName: data?.lastName || "",
-    profilePicture: data?.profilePicture || "",
-    contactNumber: data?.contactNumber || "",
-  });
-  const [address, setAddress] = useState({
-    street: data?.address?.street || "",
-    city: data?.address?.city || "",
-    state: data?.address?.state || "",
-    postalCode: data?.address?.postalCode || "",
-    country: data?.address?.country || "",
-  });
   const [imagePreview, setImagePreview] = useState(data?.profilePicture || "");
   const [uploadError, setUploadError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const countryArray = [];
+  Object.keys(countries).forEach((code) => {
+    const country = countries[code];
+    countryArray.push({
+      value: code,
+      label: country.name,
+    });
+  });
 
-  const handleChangeAddress = (e) => {
-    const { name, value } = e.target;
-    setAddress((prev) => ({ ...prev, [name]: value }));
-  };
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      firstName: data?.firstName || "",
+      lastName: data?.lastName || "",
+      contactNumber: data?.contactNumber || "",
+      address: {
+        street: data?.address?.street || "",
+        city: data?.address?.city || "",
+        state: data?.address?.state || "",
+        postalCode: data?.address?.postalCode || "",
+        country: data?.address?.country || "",
+      },
+    },
+  });
 
-  const UpdateProfile = async (e) => {
-    e.preventDefault();
-
-    const recordData = {
-      ...formData,
-      address: address,
-      profilePicture: imagePreview,
-    };
-
+  const onSubmit = async (formData) => {
     try {
       setIsSubmitting(true);
+      const recordData = {
+        ...formData,
+        profilePicture: imagePreview,
+      };
+
       const res = await patch(ENDPOINTS.USER.UPDATE, recordData, userId.user_id);
 
       if (res) {
         setClose(true);
         await setProfileInfo();
+        reset(); // Reset form with successful update
       }
     } catch (error) {
       setUploadError(error);
@@ -243,18 +261,6 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
       setIsSubmitting(false);
     }
   };
-
-  var countryArray = [];
-  Object.keys(countries).forEach((code) => {
-    const country = countries[code];
-    const obj = {
-      ...country,
-      countryCode: code,
-      value: code,
-      label: country.name,
-    };
-    countryArray.push(obj);
-  });
 
   return (
     <Card>
@@ -279,26 +285,28 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
           </Alert>
         )}
 
-        <form onSubmit={UpdateProfile} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Name Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Input
                 label="First Name"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
+                {...register("firstName")}
                 required
               />
+              {errors.firstName && (
+                <p className="mt-2 text-sm text-destructive">{errors.firstName.message}</p>
+              )}
             </div>
             <div>
               <Input
                 label="Last Name"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
+                {...register("lastName")}
                 required
               />
+              {errors.lastName && (
+                <p className="mt-2 text-sm text-destructive">{errors.lastName.message}</p>
+              )}
             </div>
           </div>
 
@@ -307,13 +315,14 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
             <div>
               <Input
                 label="Phone Number"
-                name="contactNumber"
-                value={formData.contactNumber}
-                onChange={handleChange}
+                {...register("contactNumber")}
               />
+              {errors.contactNumber && (
+                <p className="mt-2 text-sm text-destructive">{errors.contactNumber.message}</p>
+              )}
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Profile Picture</label>
+              <Label>Profile Picture</Label>
               <ImageUpload
                 imagePreview={imagePreview}
                 setImagePreview={setImagePreview}
@@ -328,43 +337,64 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
               <div className="md:col-span-2">
                 <Input
                   label="Street"
-                  name="street"
-                  value={address.street}
-                  onChange={handleChangeAddress}
+                  {...register("address.street")}
                 />
+                {errors.address?.street && (
+                  <p className="mt-2 text-sm text-destructive">{errors.address.street.message}</p>
+                )}
               </div>
               <div>
                 <Input
                   label="City"
-                  name="city"
-                  value={address.city}
-                  onChange={handleChangeAddress}
+                  {...register("address.city")}
                 />
+                {errors.address?.city && (
+                  <p className="mt-2 text-sm text-destructive">{errors.address.city.message}</p>
+                )}
               </div>
               <div>
                 <Input
                   label="State"
-                  name="state"
-                  value={address.state}
-                  onChange={handleChangeAddress}
+                  {...register("address.state")}
                 />
+                {errors.address?.state && (
+                  <p className="mt-2 text-sm text-destructive">{errors.address.state.message}</p>
+                )}
               </div>
               <div>
                 <Input
                   label="Postal Code"
-                  name="postalCode"
-                  value={address.postalCode}
-                  onChange={handleChangeAddress}
+                  {...register("address.postalCode")}
                 />
+                {errors.address?.postalCode && (
+                  <p className="mt-2 text-sm text-destructive">{errors.address.postalCode.message}</p>
+                )}
               </div>
               <div>
-                <Select
-                  label="Country"
-                  options={countryArray}
-                  value={address.country}
-                  onChange={(value) => setAddress((prev) => ({ ...prev, country: value }))}
-                  placeholder="Select a country"
+                <Label>Country</Label>
+                <Controller
+                  name="address.country"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value || undefined} onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {countryArray.map((country) => (
+                        <SelectItem key={country.value} value={country.value}>
+                          {country.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                  )}
                 />
+                {errors.address?.country && (
+                  <p className="mt-2 text-sm text-destructive">{errors.address.country.message}</p>
+                )}
               </div>
             </div>
           </div>

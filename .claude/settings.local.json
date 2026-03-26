@@ -30,7 +30,9 @@
       "Bash(grep -E \"\\\\.tsx$\")",
       "Bash(pnpm dlx:*)",
       "Bash(grep -n \"export.*Logout\\\\|useLogout\\\\|function Logout\" src/context/authContext.*)",
-      "Bash(src/types/global.d.ts:*)"
+      "Bash(src/types/global.d.ts:*)",
+      "Bash(mv \"src/components/ui/ui/select.tsx\" \"src/components/ui/select.tsx\")",
+      "Bash(rmdir \"src/components/ui/ui\")"
     ]
   }
 }

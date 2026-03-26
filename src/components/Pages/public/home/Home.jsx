@@ -3,7 +3,15 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Images from "@/components/parts/ImageCard/Images";
 import { useGlobalAppContext } from "@/context/context";
-import { Select } from "@/components/ui/Select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Button, EmptyState } from "@/components/ui";
 import { Data } from "@/assets/StaticData/Data";
@@ -95,13 +103,20 @@ const Home = () => {
       <div className="border-b">
         <div className="container mx-auto px-4 py-6">
           <div className="max-w-md">
-            <Select
-              label="Orientation"
-              options={orientationOptions}
-              value={orientation}
-              onChange={(e) => setOrientation(e.target.value)}
-              placeholder="All orientations"
-            />
+            <Select value={orientation} onValueChange={setOrientation}>
+              <SelectTrigger>
+                <SelectValue placeholder="All orientations" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {orientationOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>

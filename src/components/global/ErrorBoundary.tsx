@@ -33,7 +33,7 @@ export class ErrorBoundary extends React.Component<
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="max-w-md mx-auto text-center p-6">
+          <div className="max-w-md mx-auto text-center p-6" role="alertdialog" aria-live="assertive" aria-modal="true">
             <div className="mb-6">
               <svg
                 className="mx-auto h-16 w-16 text-destructive"

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ComboBox } from "@/components/parts/SearchBlock/Search";
+import ComboBox from "@/components/parts/SearchBlock/Search";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 

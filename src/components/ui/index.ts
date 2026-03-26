@@ -6,7 +6,18 @@ export { Avatar } from "./Avatar";
 export { Badge } from "./Badge";
 export { Skeleton } from "./Skeleton";
 export { Alert } from "./Alert";
-export { Select } from "./Select";
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+  SelectSeparator,
+  SelectScrollUpButton,
+  SelectScrollDownButton,
+} from "./select";
 export { Dialog } from "./Dialog";
 export { EmptyState } from "./empty-state";
 export { ImageSkeleton } from "./image-skeleton";
