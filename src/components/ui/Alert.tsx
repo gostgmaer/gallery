@@ -68,4 +68,31 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
 
 Alert.displayName = "Alert";
 
-export { Alert };
+// AlertTitle subcomponent
+interface AlertTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {}
+
+const AlertTitle = React.forwardRef<HTMLHeadingElement, AlertTitleProps>(
+  ({ className, ...props }, ref) => (
+    <h5
+      ref={ref}
+      className={`mb-1 font-semibold ${className || ""}`}
+      {...props}
+    />
+  )
+);
+AlertTitle.displayName = "AlertTitle";
+
+// AlertDescription subcomponent
+const AlertDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={`text-sm opacity-90 ${className || ""}`}
+    {...props}
+  />
+));
+AlertDescription.displayName = "AlertDescription";
+
+export { Alert, AlertTitle, AlertDescription };

@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useGlobalAppContext } from "@/context/context";
-import { Card, CardContent, Avatar, Button } from "@/components/ui";
+import { Card, CardContent, Avatar, Button, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui";
 import { motion, AnimatePresence } from "framer-motion";
 import InvokeAPI from "@/lib/network/invokeapi/invokeapi";
 
@@ -112,24 +112,39 @@ const Images = ({ item }) => {
               >
                 {/* Top Actions */}
                 <div className="flex justify-end gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
-                    aria-label="Like photo"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FaHeart className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
-                    aria-label="Add to collection"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FaPlus className="h-4 w-4" />
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
+                        aria-label="Like photo"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <FaHeart className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p>Like photo</p>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 bg-white/20 hover:bg-white/30 text-white backdrop-blur-sm"
+                        aria-label="Add to collection"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <FaPlus className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p>Add to collection</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
 
                 {/* Bottom Info */}
@@ -145,16 +160,23 @@ const Images = ({ item }) => {
                       {item.user.name}
                     </span>
                   </div>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="bg-white/20 hover:bg-white/30 text-white border-0 backdrop-blur-sm"
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label="Download photo"
-                  >
-                    <FaDownload className="h-4 w-4 mr-2" />
-                    <span className="hidden sm:inline">Download</span>
-                  </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="bg-white/20 hover:bg-white/30 text-white border-0 backdrop-blur-sm"
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label="Download photo"
+                      >
+                        <FaDownload className="h-4 w-4 mr-2" />
+                        <span className="hidden sm:inline">Download</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      <p>Download photo</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               </motion.div>
             )}

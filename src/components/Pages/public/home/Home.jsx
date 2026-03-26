@@ -5,8 +5,7 @@ import Images from "@/components/parts/ImageCard/Images";
 import { useGlobalAppContext } from "@/context/context";
 import { Select } from "@/components/ui/Select";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { Button } from "@/components/ui/Button";
-import { FaSearch } from "react-icons/fa";
+import { Button, EmptyState } from "@/components/ui";
 import { Data } from "@/assets/StaticData/Data";
 import { motion } from "framer-motion";
 import { containerVariants, itemVariants } from "@/lib/animations/variants";
@@ -110,25 +109,16 @@ const Home = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         {isError && items.length === 0 ? (
-          // Empty State
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="bg-muted rounded-full p-6 mb-4">
-              <FaSearch className="h-12 w-12 text-muted-foreground" />
-            </div>
-            <h2 className="text-2xl font-semibold mb-2">No images found</h2>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              Try adjusting your search or filters to find what you&apos;re looking for.
-            </p>
-            <Button
-              onClick={() => {
-                setOrientation("");
-                setItems([]);
-                setIsError(false);
-              }}
-            >
-              Clear Filters
-            </Button>
-          </div>
+          <EmptyState
+            title="No images found"
+            description="Try adjusting your search or filters to find what you're looking for."
+            actionLabel="Clear Filters"
+            onAction={() => {
+              setOrientation("");
+              setItems([]);
+              setIsError(false);
+            }}
+          />
         ) : (
           <>
             {/* Image Grid */}

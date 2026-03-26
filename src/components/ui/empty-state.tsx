@@ -2,6 +2,7 @@
 
 import React from "react";
 import { SearchX } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface EmptyStateProps {
   title?: string;
@@ -26,12 +27,9 @@ export function EmptyState({
       <h3 className="text-xl font-semibold text-foreground mb-2">{title}</h3>
       <p className="text-muted-foreground max-w-md mb-6">{description}</p>
       {onAction && actionLabel && (
-        <button
-          onClick={onAction}
-          className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-        >
+        <Button onClick={onAction} variant="default" size="sm">
           {actionLabel}
-        </button>
+        </Button>
       )}
     </div>
   );

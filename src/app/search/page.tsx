@@ -8,8 +8,8 @@ const Page = () => {
   const pathname = usePathname();
 
   const createQueryString = useCallback(
-    (obj) => {
-      const params = new URLSearchParams(searchParams);
+    (obj: Record<string, string>) => {
+      const params = new URLSearchParams(searchParams.toString());
 
       for (const key in obj) {
         if (obj.hasOwnProperty(key)) {

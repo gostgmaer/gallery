@@ -1,60 +1,66 @@
-// components/ImageUpload.js
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
+"use client";
 
+import Image from "next/image";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import {
-  getStorage,
   uploadBytesResumable,
   getDownloadURL,
   ref,
+  UploadTask,
 } from "firebase/storage";
-
 import { firebaseStorage } from "@/config/firebase";
 
-const ImageUpload = ({ imagePreview, setImagePreview }) => {
-  const [progrss, setProgrss] = useState(0);
-  const [url, setUrl] = useState(undefined);
-  const [file, setFile] = useState(undefined);
-  const [error, setError] = useState(null);
+interface ImageUploadProps {
+  imagePreview?: string | null;
+  setImagePreview: (url: string | undefined) => void;
+}
 
-  const onFileUpload = () => {
+const ImageUpload: React.FC<ImageUploadProps> = ({
+  imagePreview,
+  setImagePreview,
+}) => {
+  const [file, setFile] = useState<File | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+
+  const onFileUpload = (): void => {
     if (!file) return;
 
-    const storageRef = ref(firebaseStorage, `/Images/${file?.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    const storageRef = ref(firebaseStorage, `/Images/${file.name}`);
+    const uploadTask: UploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(
       "state_changed",
-      (snapshot) => {
-        var progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setProgrss(progress);
+      () => {
+        // Progress tracking can be added later if needed
       },
       (err) => {
         setError(err);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-          setUrl(url);
           setImagePreview(url);
         });
       }
     );
   };
-  const onFileChange = (e) => {
+
+  const onFileChange = (e: ChangeEvent<HTMLInputElement>): void => {
     e.preventDefault();
-    setFile(e.target.files[0]);
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
   };
 
   useEffect(() => {
-    onFileUpload();
+    if (file) {
+      onFileUpload();
+    }
   }, [file]);
 
   return (
     <div className="">
       <div>
-        <label className=" block text-gray-600 font-semibold mb-2">
+        <label className="block text-gray-600 font-semibold mb-2">
           Upload an Image
         </label>
         <div className="mt-2 flex items-center justify-start">
@@ -87,6 +93,11 @@ const ImageUpload = ({ imagePreview, setImagePreview }) => {
           />
         </div>
       </div>
+      {error && (
+        <p className="text-red-500 text-sm mt-2">
+          Upload failed: {error.message}
+        </p>
+      )}
       <div>
         {imagePreview && (
           <div className="">
@@ -94,7 +105,7 @@ const ImageUpload = ({ imagePreview, setImagePreview }) => {
             <Image
               src={imagePreview}
               alt="Preview"
-              className="mt-2 w-24 h-24 rounded-lg"
+              className="mt-2 w-24 h-24 rounded-lg object-cover"
               width={100}
               height={100}
             />

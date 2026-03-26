@@ -26,7 +26,11 @@
       "Bash(mv Avatar.jsx Avatar.tsx)",
       "Bash(mv Badge.jsx Badge.tsx)",
       "Bash(pnpm lint:*)",
-      "Bash(pnpm tsc:*)"
+      "Bash(pnpm tsc:*)",
+      "Bash(grep -E \"\\\\.tsx$\")",
+      "Bash(pnpm dlx:*)",
+      "Bash(grep -n \"export.*Logout\\\\|useLogout\\\\|function Logout\" src/context/authContext.*)",
+      "Bash(src/types/global.d.ts:*)"
     ]
   }
 }

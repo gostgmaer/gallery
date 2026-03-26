@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { post } from "@/lib/network/http";
-import { notifyerror } from "@/lib/notify/notice";
+import { notifyError } from "@/lib/notify/notice";
 import { useAuthContext } from "@/context/authContext";
 import { ENDPOINTS } from "@/config/endpoints";
 import { useGlobalLoading } from "@/lib/network/loading";
@@ -12,11 +12,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { resetPasswordSchema } from "@/lib/validations/auth";
+type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
 import Spinner from "@/components/global/loader/Spinner";
 
 const ResetPassword = () => {
-  const { handleLoginAuth, user, userId } = useAuthContext();
+  const { userId } = useAuthContext();
   const loading = useGlobalLoading();
   const router = useRouter();
   const param = useSearchParams();
@@ -26,13 +28,13 @@ const ResetPassword = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
-  } = useForm({
+  } = useForm<ResetPasswordData>({
     resolver: zodResolver(resetPasswordSchema),
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: ResetPasswordData) => {
     if (!param.getAll("token")[0]) {
-      notifyerror("No password reset token found", 2000);
+      notifyError("No password reset token found", 2000);
       return;
     }
 
@@ -44,10 +46,11 @@ const ResetPassword = () => {
       if (reset.status == "OK") {
         router.push("/auth/login");
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to reset password. Please try again.";
       setError("root", {
         type: "manual",
-        message: error.message || "Failed to reset password. Please try again.",
+        message,
       });
     }
   };

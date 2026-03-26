@@ -1,21 +1,21 @@
 "use client";
 
 import React from "react";
+import { Slot } from "@radix-ui/react-slot";
 import { FaSpinner } from "react-icons/fa";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   size?: "default" | "sm" | "lg" | "icon";
   loading?: boolean;
+  asChild?: boolean;
   children: React.ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "default", size = "default", loading, disabled, children, ...props }, ref) => {
-    // Base styles
+  ({ className, variant = "default", size = "default", loading, disabled, children, asChild = false, ...props }, ref) => {
     const baseStyles = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
 
-    // Variants
     const variants = {
       default: "bg-primary text-primary-foreground hover:bg-primary/90",
       destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
@@ -25,7 +25,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       link: "text-primary underline-offset-4 hover:underline",
     };
 
-    // Sizes
     const sizes = {
       default: "h-10 px-4 py-2",
       sm: "h-9 rounded-md px-3",
@@ -33,9 +32,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       icon: "h-10 w-10",
     };
 
+    const buttonClasses = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className || ""}`;
+
+    if (asChild) {
+      return (
+        <Slot ref={ref} className={buttonClasses} disabled={disabled || loading} {...props}>
+          {children}
+        </Slot>
+      );
+    }
+
     return (
       <button
-        className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className || ""}`}
+        className={buttonClasses}
         ref={ref}
         disabled={disabled || loading}
         {...props}
@@ -46,7 +55,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
-
 Button.displayName = "Button";
 
 export { Button };

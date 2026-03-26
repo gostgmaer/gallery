@@ -1,11 +1,11 @@
 "use client";
+
 import ImageUpload from "@/components/global/fields/ImageUpload";
 import { Select } from "@/components/ui";
 import { useAuthContext } from "@/context/authContext";
-import { get, getsingle, patch } from "@/lib/network/http";
+import { get, patch } from "@/lib/network/http";
 import { ENDPOINTS } from "@/config/endpoints";
 import { countries } from "countries-list";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -13,11 +13,12 @@ import { Input } from "@/components/ui/Input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Avatar } from "@/components/ui/Avatar";
+import { Separator } from "@/components/ui/Separator";
 
 const Personal = () => {
   const { user, userId } = useAuthContext();
   const [profileInfo, setProfileInfo] = useState(undefined);
-  const [close, setClose] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState(null);
 
   const getProfile = async () => {
@@ -34,6 +35,21 @@ const Personal = () => {
   useEffect(() => {
     getProfile();
   }, []);
+
+  const handleProfileUpdate = async () => {
+    await getProfile();
+    setIsEditing(false);
+  };
+
+  if (!profileInfo) {
+    return (
+      <div className="container mx-auto py-8">
+        <div className="flex justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-8">
@@ -54,25 +70,129 @@ const Personal = () => {
         )}
       </div>
 
-      {profileInfo && (
-        <UserprofileDetails userData={profileInfo.result} setClose={setClose} />
-      )}
-
-      {!close && profileInfo?.result && (
-        <UserProfile
-          data={profileInfo.result}
-          setClose={setClose}
-          setProfileInfo={setProfileInfo}
-        />
+      {isEditing ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left: Edit Form */}
+          <UserProfile
+            data={profileInfo.result}
+            setClose={setIsEditing}
+            setProfileInfo={handleProfileUpdate}
+          />
+          {/* Right: Preview */}
+          <Card className="h-fit">
+            <CardHeader>
+              <CardTitle>Profile Preview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ProfilePreview userData={profileInfo.result} />
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
+        <div className="max-w-4xl mx-auto">
+          <ProfileView userData={profileInfo.result} onEdit={() => setIsEditing(true)} />
+        </div>
       )}
     </div>
   );
 };
 
-export default Personal;
+const ProfilePreview = ({ userData }) => {
+  return (
+    <div className="space-y-6">
+      {/* Avatar & Name */}
+      <div className="flex items-center gap-4">
+        <Avatar
+          src={userData.profilePicture}
+          alt={`${userData.username}'s profile`}
+          size="xl"
+          fallback={userData.username?.charAt(0)}
+        />
+        <div>
+          <h3 className="text-xl font-semibold">{userData.username}</h3>
+          <p className="text-muted-foreground">{userData.email}</p>
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Personal Info */}
+      <div>
+        <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+          Personal Information
+        </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <p className="text-sm text-muted-foreground">First Name</p>
+            <p className="font-medium">{userData.firstName}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">Last Name</p>
+            <p className="font-medium">{userData.lastName}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">Phone</p>
+            <p className="font-medium">{userData.contactNumber || "—"}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground">Role</p>
+            <p className="font-medium">{userData.role}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Address */}
+      {userData?.address && (
+        <div>
+          <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+            Address
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2">
+              <p className="text-sm text-muted-foreground">Street</p>
+              <p className="font-medium">{userData.address.street}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">City</p>
+              <p className="font-medium">{userData.address.city}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">State</p>
+              <p className="font-medium">{userData.address.state}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Postal Code</p>
+              <p className="font-medium">{userData.address.postalCode}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Country</p>
+              <p className="font-medium">{userData.address.country}</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ProfileView = ({ userData, onEdit }) => {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between pb-4">
+        <CardTitle className="text-2xl font-semibold">Profile Details</CardTitle>
+        <Button variant="outline" onClick={onEdit}>
+          Edit Profile
+        </Button>
+      </CardHeader>
+      <CardContent>
+        <ProfilePreview userData={userData} />
+      </CardContent>
+    </Card>
+  );
+};
 
 const UserProfile = ({ data, setClose, setProfileInfo }) => {
-  const { user, userId } = useAuthContext();
+  const { userId } = useAuthContext();
   const [formData, setFormData] = useState({
     firstName: data?.firstName || "",
     lastName: data?.lastName || "",
@@ -115,12 +235,7 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
 
       if (res) {
         setClose(true);
-        const userInfoData = await getsingle(
-          ENDPOINTS.USER.PROFILE,
-          null,
-          userId.user_id
-        );
-        setProfileInfo(userInfoData);
+        await setProfileInfo();
       }
     } catch (error) {
       setUploadError(error);
@@ -142,14 +257,14 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
   });
 
   return (
-    <Card className="max-w-4xl mx-auto">
+    <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle className="text-2xl font-semibold">Basic Info</CardTitle>
+        <CardTitle className="text-2xl font-semibold">Edit Profile</CardTitle>
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setClose(true)}
-          aria-label="Close"
+          onClick={() => setClose(false)}
+          aria-label="Close edit"
         >
           <X className="h-5 w-5" />
         </Button>
@@ -266,111 +381,4 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
   );
 };
 
-const UserprofileDetails = ({ userData, setClose }) => {
-  return (
-    <div className="bg-gray-50 p-4 rounded-lg shadow-md mb-10">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="">
-          <label className="text-gray-700 font-bold mb-2" htmlFor="firstName">
-            First Name:
-          </label>
-          <span className="text-gray-800">{userData.firstName}</span>
-        </div>
-
-        <div className="">
-          <label className="text-gray-700 font-bold mb-2" htmlFor="lastName">
-            Last Name:
-          </label>
-          <span className="text-gray-800">{userData.lastName}</span>
-        </div>
-
-        <div>
-          <label className="text-gray-700 font-bold mb-2" htmlFor="username">
-            Username:
-          </label>
-          <span className="text-gray-800">{userData.username}</span>
-        </div>
-
-        <div>
-          <label className="text-gray-700 font-bold mb-2" htmlFor="email">
-            Email:
-          </label>
-          <span className="text-gray-800">{userData.email}</span>
-        </div>
-
-        <div>
-          <label className="text-gray-700 font-bold mb-2" htmlFor="role">
-            Role:
-          </label>
-          <span className="text-gray-800">{userData.role}</span>
-        </div>
-
-        {userData?.address?.city && (
-          <div className="col-span-2">
-            <label
-              className="text-gray-700 font-bold text-lg mb-4 pb-4"
-              htmlFor="address"
-            >
-              Address:
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label
-                  className="text-gray-700 font-bold mb-2"
-                  htmlFor="street"
-                >
-                  Street:
-                </label>
-                <span className="text-gray-800">{userData.address.street}</span>
-              </div>
-              <div>
-                <label className="text-gray-700 font-bold mb-2" htmlFor="city">
-                  City:
-                </label>
-                <span className="text-gray-800">{userData.address.city}</span>
-              </div>
-              <div>
-                <label className="text-gray-700 font-bold mb-2" htmlFor="state">
-                  State:
-                </label>
-                <span className="text-gray-800">{userData.address.state}</span>
-              </div>
-              <div>
-                <label
-                  className="text-gray-700 font-bold mb-2"
-                  htmlFor="postalCode"
-                >
-                  Postal Code:
-                </label>
-                <span className="text-gray-800">
-                  {userData.address.postalCode}
-                </span>
-              </div>
-              <div>
-                <label
-                  className="text-gray-700 font-bold mb-2"
-                  htmlFor="country"
-                >
-                  Country:
-                </label>
-                <span className="text-gray-800">
-                  {userData.address.country}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className=" col-span-2 flex justify-end">
-          <button
-            type="button"
-            onClick={() => setClose(false)}
-            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300"
-          >
-            Update Information
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+export default Personal;

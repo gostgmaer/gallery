@@ -1,28 +1,28 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 let loadingCount = 0;
-const listeners = new Set();
+const listeners = new Set<(loading: boolean) => void>();
 
-const notifyListeners = () => {
+const notifyListeners = (): void => {
   listeners.forEach((listener) => listener(loadingCount > 0));
 };
 
-export const incrementLoading = () => {
+export const incrementLoading = (): void => {
   loadingCount++;
   notifyListeners();
 };
 
-export const decrementLoading = () => {
+export const decrementLoading = (): void => {
   loadingCount = Math.max(0, loadingCount - 1);
   notifyListeners();
 };
 
-export const useGlobalLoading = () => {
+export const useGlobalLoading = (): boolean => {
   const [isLoading, setIsLoading] = useState(loadingCount > 0);
 
   useEffect(() => {
-    const handleLoadingChange = (loading) => {
+    const handleLoadingChange = (loading: boolean): void => {
       setIsLoading(loading);
     };
 

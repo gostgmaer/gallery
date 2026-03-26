@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
-import { registerSchema } from "@/lib/validations/auth";
+import { z } from "zod";
+import { loginSchema } from "@/lib/validations/auth";
+type LoginData = z.infer<typeof loginSchema>;
 
-const Register = () => {
+const Login = () => {
   const { handleLoginAuth, userId } = useAuthContext();
   const router = useRouter();
 
@@ -21,8 +23,8 @@ const Register = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
-  } = useForm({
-    resolver: zodResolver(registerSchema),
+  } = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
   });
 
   useEffect(() => {
@@ -31,16 +33,17 @@ const Register = () => {
     }
   }, [userId, router]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: LoginData) => {
     try {
       const res = await handleLoginAuth(data);
       if (res) {
         router.push("/profile");
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to login. Please try again.";
       setError("root", {
         type: "manual",
-        message: error.message || "Registration failed. Please try again.",
+        message,
       });
     }
   };
@@ -50,8 +53,8 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 px-4 py-8">
-      <div className="w-full max-w-2xl">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 px-4">
+      <div className="w-full max-w-md">
         <div className="bg-card text-card-foreground rounded-xl shadow-lg border p-8">
           {/* Header */}
           <div className="text-center mb-8">
@@ -60,9 +63,9 @@ const Register = () => {
                 Gallery
               </h1>
             </Link>
-            <h2 className="text-2xl font-semibold mt-6 mb-2">Create account</h2>
+            <h2 className="text-2xl font-semibold mt-6 mb-2">Welcome back</h2>
             <p className="text-muted-foreground text-sm">
-              Join our community of creators and find the perfect images
+              Enter your credentials to access your account
             </p>
           </div>
 
@@ -77,77 +80,39 @@ const Register = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Name Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Input
-                  label="First Name"
-                  {...register("firstName")}
-                  error={errors.firstName?.message}
-                  placeholder="John"
-                />
-              </div>
-              <div>
-                <Input
-                  label="Last Name"
-                  {...register("lastName")}
-                  error={errors.lastName?.message}
-                  placeholder="Doe"
-                />
-              </div>
-            </div>
-
-            {/* Email */}
             <div>
               <Input
                 label="Email"
                 type="email"
+                placeholder="you@example.com"
                 {...register("email")}
                 error={errors.email?.message}
-                placeholder="you@example.com"
                 autoComplete="email"
               />
             </div>
 
-            {/* Username */}
             <div>
               <Input
-                label="Username"
-                {...register("username")}
-                error={errors.username?.message}
-                placeholder="johndoe"
-                autoComplete="username"
+                label="Password"
+                type="password"
+                placeholder="Enter your password"
+                {...register("password")}
+                error={errors.password?.message}
+                autoComplete="current-password"
               />
             </div>
 
-            {/* Password Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Input
-                  label="Password"
-                  type="password"
-                  {...register("password")}
-                  error={errors.password?.message}
-                  placeholder="Create a password"
-                  autoComplete="new-password"
-                  helperText="At least 6 characters"
-                />
-              </div>
-              <div>
-                <Input
-                  label="Confirm Password"
-                  type="password"
-                  {...register("confirm_password")}
-                  error={errors.confirm_password?.message}
-                  placeholder="Confirm your password"
-                  autoComplete="new-password"
-                />
-              </div>
+            <div className="flex items-center justify-end">
+              <Link
+                href="/auth/forget-password"
+                className="text-sm text-primary hover:underline"
+              >
+                Forgot password?
+              </Link>
             </div>
 
-            {/* Submit Button */}
             <Button type="submit" className="w-full" size="lg" loading={isSubmitting}>
-              Create account
+              Sign in
             </Button>
           </form>
 
@@ -177,9 +142,9 @@ const Register = () => {
 
           {/* Footer */}
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link href="/auth/login" className="text-primary hover:underline font-medium">
-              Sign in
+            Don&apos;t have an account?{" "}
+            <Link href="/auth/register" className="text-primary hover:underline font-medium">
+              Sign up
             </Link>
           </p>
         </div>
@@ -188,4 +153,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
