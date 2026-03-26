@@ -25,22 +25,40 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Avatar } from "@/components/ui/Avatar";
 import { Separator } from "@/components/ui/Separator";
 import { profileSchema } from "@/lib/validations/profile";
-import { z } from "zod";
+
+interface ProfileInfo {
+  result: {
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    contactNumber?: string;
+    profilePicture?: string;
+    address?: {
+      street?: string;
+      city?: string;
+      state?: string;
+      postalCode?: string;
+      country?: string;
+    };
+    [key: string]: any;
+  };
+}
 
 const Personal = () => {
-  const { user, userId } = useAuthContext();
-  const [profileInfo, setProfileInfo] = useState(undefined);
+  const { userId } = useAuthContext();
+  const [profileInfo, setProfileInfo] = useState<ProfileInfo | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [error, setError] = useState(null);
+  const [fetchError, setFetchError] = useState<Error | null>(null);
 
   const getProfile = async () => {
     try {
       if (userId?.user_id) {
-        const res = await get(ENDPOINTS.USER.PROFILE, null, userId.user_id);
+        const res = await get<ProfileInfo>(ENDPOINTS.USER.PROFILE, null, userId.user_id);
         setProfileInfo(res);
       }
     } catch (err) {
-      setError(err);
+      setFetchError(err instanceof Error ? err : new Error(String(err)));
     }
   };
 
@@ -56,9 +74,22 @@ const Personal = () => {
   if (!profileInfo) {
     return (
       <div className="container mx-auto py-8">
-        <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        </div>
+        {fetchError ? (
+          <div className="flex flex-col items-center justify-center gap-4">
+            <Alert variant="destructive" className="max-w-md" role="alert">
+              <AlertDescription>
+                {fetchError.message || "Failed to load profile. Please try again."}
+              </AlertDescription>
+            </Alert>
+            <Button onClick={getProfile} variant="outline">
+              Retry
+            </Button>
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        )}
       </div>
     );
   }
@@ -109,7 +140,7 @@ const Personal = () => {
   );
 };
 
-const ProfilePreview = ({ userData }) => {
+const ProfilePreview = ({ userData }: { userData: ProfileInfo['result'] }) => {
   return (
     <div className="space-y-6">
       {/* Avatar & Name */}
@@ -187,7 +218,7 @@ const ProfilePreview = ({ userData }) => {
   );
 };
 
-const ProfileView = ({ userData, onEdit }) => {
+const ProfileView = ({ userData, onEdit }: { userData: ProfileInfo['result']; onEdit: () => void }) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-4">
@@ -203,13 +234,13 @@ const ProfileView = ({ userData, onEdit }) => {
   );
 };
 
-const UserProfile = ({ data, setClose, setProfileInfo }) => {
+const UserProfile = ({ data, setClose, setProfileInfo }: { data: ProfileInfo['result']; setClose: (value: boolean) => void; setProfileInfo: () => Promise<void> }) => {
   const { userId } = useAuthContext();
   const [imagePreview, setImagePreview] = useState(data?.profilePicture || "");
-  const [uploadError, setUploadError] = useState(null);
+  const [uploadError, setUploadError] = useState<Error | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const countryArray = [];
+  const countryArray: Array<{ value: string; label: string }> = [];
   Object.keys(countries).forEach((code) => {
     const country = countries[code];
     countryArray.push({
@@ -224,7 +255,7 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
     control,
     formState: { errors },
     reset,
-  } = useForm({
+  } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       firstName: data?.firstName || "",
@@ -240,7 +271,7 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
     },
   });
 
-  const onSubmit = async (formData) => {
+  const onSubmit: SubmitHandler<ProfileFormData> = async (formData) => {
     try {
       setIsSubmitting(true);
       const recordData = {
@@ -248,15 +279,15 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
         profilePicture: imagePreview,
       };
 
-      const res = await patch(ENDPOINTS.USER.UPDATE, recordData, userId.user_id);
+      const res = await patch(ENDPOINTS.USER.UPDATE, recordData, userId!.user_id);
 
       if (res) {
-        setClose(true);
+        setClose(false);
         await setProfileInfo();
         reset(); // Reset form with successful update
       }
     } catch (error) {
-      setUploadError(error);
+      setUploadError(error instanceof Error ? error : new Error(String(error)));
     } finally {
       setIsSubmitting(false);
     }
@@ -278,7 +309,7 @@ const UserProfile = ({ data, setClose, setProfileInfo }) => {
 
       <CardContent>
         {uploadError && (
-          <Alert variant="destructive" className="mb-6">
+          <Alert variant="destructive" className="mb-6" role="alert">
             <AlertDescription>
               {uploadError?.message || "Failed to update profile. Please try again."}
             </AlertDescription>

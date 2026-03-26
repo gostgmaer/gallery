@@ -36,7 +36,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     if (asChild) {
       return (
-        <Slot ref={ref} className={buttonClasses} disabled={disabled || loading} {...props}>
+        <Slot ref={ref} className={buttonClasses} {...props}>
           {children}
         </Slot>
       );

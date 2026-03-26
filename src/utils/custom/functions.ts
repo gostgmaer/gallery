@@ -1,7 +1,9 @@
-export const deletekeys = (query) => {
-  return Object.keys(query).forEach(
-    (key) =>
-      (query[key] === "" || query[key] == null || query[key] === undefined) &&
-      delete query[key]
-  );
+export const deletekeys = <T extends Record<string, any>>(query: T): T => {
+  Object.keys(query).forEach((key) => {
+    const value = query[key];
+    if (value === "" || value == null || value === undefined) {
+      delete query[key];
+    }
+  });
+  return query;
 };

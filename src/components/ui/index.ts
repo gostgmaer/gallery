@@ -18,7 +18,7 @@ export {
   SelectScrollUpButton,
   SelectScrollDownButton,
 } from "./select";
-export { Dialog } from "./Dialog";
+export { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, DialogOverlay, DialogTrigger, DialogPortal } from "./Dialog";
 export { EmptyState } from "./empty-state";
 export { ImageSkeleton } from "./image-skeleton";
 export { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "./Tooltip";

@@ -1,6 +1,5 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { Slot } from "@radix-ui/react-slot"
 import { Controller, useFormContext } from "react-hook-form"
 
 const Form = React.forwardRef<
@@ -72,7 +71,7 @@ const FormMessage = React.forwardRef<
     ? typeof children === "string"
       ? children
       : null
-    : formState.errors[name]?.message
+    : (formState.errors as any)[name]?.message
 
   if (!message) return null
 
