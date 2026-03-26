@@ -1,6 +1,6 @@
 import axios from "axios";
 import instance from "./interceptors";
-import { notifySuccess, notifyerror } from "../notify/notice";
+import { notifySuccess, notifyError } from "../notify/notice";
 import { parseCookies } from "nookies";
 import { ApiError, AuthError } from "./errors";
 
@@ -29,11 +29,11 @@ function notifyIfNotSession(endpoint: string, message: string) {
 
 function notifyErrorIfNotSession(endpoint: string, message: string) {
   if (!endpoint.includes("session")) {
-    notifyerror(message, 2000);
+    notifyError(message, 2000);
   }
 }
 
-export const get = async (endpoint: string, query: any = {}, id?: string) => {
+export const get = async <T = any>(endpoint: string, query: any = {}, id?: string): Promise<T> => {
   const cookies = parseCookies();
   const token = cookies["accessToken"];
   const session = cookies["session"];
@@ -49,7 +49,7 @@ export const get = async (endpoint: string, query: any = {}, id?: string) => {
       },
       params: query,
     });
-    return response.data;
+    return response.data as T;
   } catch (error: any) {
     // Re-throw typed error for caller to handle
     throw throwApiError(error);
@@ -100,7 +100,7 @@ export const getServerSingle = async (endpoint: string, query: any = {}, id: str
   }
 };
 
-export const post = async (endpoint: string, data: any = {}) => {
+export const post = async <T = any>(endpoint: string, data: any = {}): Promise<T> => {
   const cookies = parseCookies();
   const token = cookies["accessToken"];
   const session = cookies["session"];
@@ -117,7 +117,7 @@ export const post = async (endpoint: string, data: any = {}) => {
     });
     const message = response.data.message;
     notifyIfNotSession(endpoint, message);
-    return response.data;
+    return response.data as T;
   } catch (error: any) {
     const errData = error.response?.data || { message: error.message };
     notifyErrorIfNotSession(endpoint, errData.message);
@@ -125,7 +125,7 @@ export const post = async (endpoint: string, data: any = {}) => {
   }
 };
 
-export const patch = async (endpoint: string, data: any = {}, id: string) => {
+export const patch = async <T = any>(endpoint: string, data: any = {}, id: string): Promise<T> => {
   const cookies = parseCookies();
   const token = cookies["accessToken"];
   const session = cookies["session"];
@@ -141,10 +141,10 @@ export const patch = async (endpoint: string, data: any = {}, id: string) => {
       data,
     });
     notifySuccess(response.data.message, 2000);
-    return response.data;
+    return response.data as T;
   } catch (error: any) {
     const errData = error.response?.data || { message: error.message };
-    notifyerror(errData.message, 2000);
+    notifyError(errData.message, 2000);
     throw throwApiError(error);
   }
 };
@@ -168,7 +168,7 @@ export const del = async (endpoint: string, id: string) => {
     return response.data;
   } catch (error: any) {
     const errData = error.response?.data || { message: error.message };
-    notifyerror(errData.message, 2000);
+    notifyError(errData.message, 2000);
     throw throwApiError(error);
   }
 };

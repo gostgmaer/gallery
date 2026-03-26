@@ -14,7 +14,7 @@ import { get, patch } from "@/lib/network/http";
 import { ENDPOINTS } from "@/config/endpoints";
 import { countries } from "countries-list";
 import React, { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -25,6 +25,8 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Avatar } from "@/components/ui/Avatar";
 import { Separator } from "@/components/ui/Separator";
 import { profileSchema } from "@/lib/validations/profile";
+import { z };
+type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface ProfileInfo {
   result: {
@@ -241,11 +243,10 @@ const UserProfile = ({ data, setClose, setProfileInfo }: { data: ProfileInfo['re
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const countryArray: Array<{ value: string; label: string }> = [];
-  Object.keys(countries).forEach((code) => {
-    const country = countries[code];
+  Object.entries(countries).forEach(([code, country]) => {
     countryArray.push({
       value: code,
-      label: country.name,
+      label: (country as any).name,
     });
   });
 
@@ -356,7 +357,7 @@ const UserProfile = ({ data, setClose, setProfileInfo }: { data: ProfileInfo['re
               <Label>Profile Picture</Label>
               <ImageUpload
                 imagePreview={imagePreview}
-                setImagePreview={setImagePreview}
+                setImagePreview={(url) => setImagePreview(url)}
               />
             </div>
           </div>
